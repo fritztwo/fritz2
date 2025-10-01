@@ -65,7 +65,8 @@ jobs:
         with:
           target_branch: gh-pages
           jekyll: false
-          fqdn: next.fritz2.dev
+          # TODO Needs to be re-enabled when we have our own domain again
+          #fqdn: next.fritz2.dev
           build_dir: ./www/_site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
