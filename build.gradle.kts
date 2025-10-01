@@ -7,7 +7,6 @@ plugins {
     id("com.google.devtools.ksp") apply false
     id("org.jetbrains.dokka")
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
-    id("maven-publish")
     signing
 }
 
@@ -33,6 +32,15 @@ allprojects {
 subprojects {
     group = "dev.fritz2"
     version = "1.0-SNAPSHOT"
+}
+
+dependencies {
+    // Dokka v2 needs to explicitly know which modules to include in the
+    // aggregated documentation (used as part of the website):
+    dokka(project(":core"))
+    dokka(project(":headless"))
+    dokka(project(":serialization"))
+    dokka(project(":lenses-annotation-processor"))
 }
 
 tasks.dokkaHtmlMultiModule.configure {

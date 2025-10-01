@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.google.devtools.ksp")
     id("org.jetbrains.dokka")
+    id("fritz2-publishing-config")
 }
 
 ksp {
@@ -43,5 +44,3 @@ kotlin {
         }
     }
 }
-
-apply(from = "$rootDir/publishing.gradle.kts")

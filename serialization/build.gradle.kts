@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
+    id("fritz2-publishing-config")
 }
 
 kotlin {
@@ -16,5 +17,3 @@ kotlin {
         }
     }
 }
-
-apply(from = "$rootDir/publishing.gradle.kts")
