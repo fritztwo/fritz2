@@ -7,7 +7,7 @@ plugins {
     id("com.google.devtools.ksp") apply false
     id("org.jetbrains.dokka")
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
-    id("maven-publish")
+    id("com.vanniktech.maven.publish") version "0.35.0" apply false
     signing
 }
 
