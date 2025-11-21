@@ -34,7 +34,7 @@ the<PublishingExtension>().apply {
             name = "sonatype"
 
             val releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            val snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            val snapshotUrl = "https://central.sonatype.com/repository/maven-snapshots/"
             val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
 
             url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
@@ -71,14 +71,24 @@ the<PublishingExtension>().apply {
 
             developers {
                 developer {
-                    id.set("jwstegemann")
-                    name.set("Jens Stegemann")
-                    email.set("jwstegemann@gmail.com")
+                    id.set("lysander")
+                    name.set("Christian Hausknecht")
+                    email.set("christian.hausknecht@gmx.de")
                 }
                 developer {
-                    id.set("jamowei")
-                    name.set("Jan Weidenhaupt")
-                    email.set("jan@rexster.de")
+                    id.set("haukesomm")
+                    name.set("Hauke Sommerfeld")
+                    email.set("development@haukesomm.de")
+                }
+                developer {
+                    id.set("loesking")
+                    name.set("Lukas Lösking")
+                    email.set("sonatype@loesking.com")
+                }
+                developer {
+                    id.set("zqirui")
+                    name.set("Qirui Zhu ")
+                    email.set("qrno98@gmail.com")
                 }
             }
         }
