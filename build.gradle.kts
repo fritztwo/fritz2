@@ -24,7 +24,7 @@ allprojects {
     // NodeJS v20 is supported until April 2026.
     plugins.withType<NodeJsPlugin> {
         kotlinNodeJsEnvSpec.apply {
-            version = "20.19.4"
+            version = "20.19.6"
             download = true
         }
     }
