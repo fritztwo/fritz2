@@ -1,4 +1,4 @@
-name: release
+name: Publish release libs and deploy fritz2.dev to GitHub pages
 
 on:
   release:
@@ -46,7 +46,7 @@ jobs:
         run: export NODE_OPTIONS=--openssl-legacy-provider && npm install && npm run build
 
       - name: Copy api docs to webpage
-        run: mkdir -p ./www/_site/api && cp -r ./api/* ./www/_site/api
+        run: mkdir -p ./www/_site/api && cp -r ./build/dokka/html/* ./www/_site/api
 
       - name: Copy headless-demo files to webpage
         run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/dist/js/productionExecutable/* ./www/_site/headless-demo
@@ -66,11 +66,11 @@ jobs:
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
         with:
-          repo: jwstegemann/fritz2-web
-          target_branch: master
+          repo: fritztwo/website
+          target_branch: main
           keep_history: false
           jekyll: false
           fqdn: www.fritz2.dev
           build_dir: ./www/_site
         env:
-          GH_PAT: ${{ secrets.FRITZ2_WEB_TOKEN }}
+          GH_PAT: ${{ secrets.RELEASE_WEBSITE_TOKEN }}

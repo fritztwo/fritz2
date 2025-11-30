@@ -58,8 +58,11 @@ This is also true for your model-validation-code, which can quickly become far m
 - processing state ("spinning wheel")
 - webcomponents
 - easy to learn
-- [documentation](https://fritz2.dev/docs)
-- [examples](/examples) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
+
+## Documentation
+
+- [Developer documentation](https://fritz2.dev/docs)
+- [Project documentation](doc/10_INDEX.md)
 
 ## How to try it?
 
