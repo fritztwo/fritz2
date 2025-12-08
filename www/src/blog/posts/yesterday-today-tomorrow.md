@@ -1,6 +1,6 @@
 ---
 layout: layouts/post.njk
-image: paradigm-shift-for-components.jpg
+image: yesterday-today-tomorrow.png
 type: article
 title: Yesterday - Today - Tomorrow.
 description: "fritz2's development has moved from a single project into a dedicated organization. We want to explain
@@ -10,6 +10,8 @@ date: 2025-12-08
 author: chausknecht
 readtime: 5
 ---
+
+![yesterday-today-tomorrow](/img/yesterday-today-tomorrow.png)
 
 ## Yesterday
 
@@ -44,7 +46,7 @@ In fact, we hope you have not recognized this at all until now, as for the last 
 
 In order to reflect those changes and make the deployment work easier for the core devs, we have lately decided
 to create a new github organization to bundle all official fritz2 projects into one place.
-So checkout the [https://github.com/fritztwo] organization, if you have not done this yet.
+So checkout the [organization](https://github.com/fritztwo), if you have not done this yet.
 
 You can get the core-framework, and the two template-projects from there. There are also some smaller projects, which
 acts as helper or playground for future developments.
@@ -74,14 +76,14 @@ our saga continues 😉)
 As this shift into an organization could be seen as a last step of a smooth handover to new developers, we are happy to
 present you some final greeting of the fritz2's initiator Jens Stegemann:
 
-> "When we have started this project, it was our aim to craft some lightweight and easy usable web framework based upon
+> When we have started this project, it was our aim to craft some lightweight and easy usable web framework based upon
 > Kotlin, to enable a consistent and nice user experience throughout the different software layers. fritz2 has filled
-> the original gap so well, I could have never imagined!"
+> the original gap so well, I could have never imagined!
 > 
-> "It is always hard to give up some project and move on, but I am so grateful, that we were able to open the
+> It is always hard to give up some project and move on, but I am so grateful, that we were able to open the
 > development in early days and attract new contributors over the time, so that the development could be continued
-> without me and Jan."
+> without me and Jan.
 > 
-> "I can promise you out there, that fritz2 is in the best hands possible!"
+> I can promise you out there, that fritz2 is in the best hands possible!
 
 Thank you, Jens and Jan for your passion and dedication over the years!
