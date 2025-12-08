@@ -11,6 +11,12 @@ author: chausknecht
 readtime: 5
 ---
 
+## TL;TR:
+
+- Snapshots are available from a new repository: [https://central.sonatype.com/repository/maven-snapshots/](https://central.sonatype.com/repository/maven-snapshots/)
+- There is a new [organization](https://github.com/fritztwo) to gather all official fritz2 related projects. 
+
+
 ![yesterday-today-tomorrow](/img/yesterday-today-tomorrow.png)
 
 ## Yesterday
@@ -26,7 +32,7 @@ Kotlin's multiplatform vision seemed like the game-changer needed to achieve thi
 
 If only there had been a web framework available—but that simply wasn't the case...
 
-...but you all know the result: fritz2 was born and has been actively developed and polished ever since. 
+...you all know the result: fritz2 was born and has been actively developed and polished ever since. 
 Over time, new developers were attracted to the project and joined the core development team.
 
 ## Today
@@ -52,7 +58,9 @@ You can find the core framework and the two template projects there. There are a
 as helpers or playgrounds for future developments.
 
 This website's URL and the Maven Central repository remain the same! As mentioned, these changes are practically
-transparent to you as a framework user. You do not need to change anything inside your projects.
+transparent to you as a framework user. You do not need to change anything inside your projects, besides removing the
+outdated repository for *SNAPSHOTs*, and use this 
+[one instead](https://central.sonatype.com/repository/maven-snapshots/), if you have not already.
 
 ## Tomorrow
 
