@@ -15,75 +15,72 @@ readtime: 5
 
 ## Yesterday
 
-In late 2019 Jens Stegemann and Jan Weidenhaupt have started to investigate the possibilities to create web driven
-frontends in Kotlin based upon the brand new multi platform approach (which was hardly in alpha state), in order to
-streamline the internal development of the insurance company, they have worked for at this time.
+In late 2019, Jens Stegemann and Jan Weidenhaupt started investigating the possibility of creating web-driven frontends
+in Kotlin using the brand-new multiplatform approach (which was barely in alpha state at the time).
+Their goal was to streamline internal development at the insurance company where they worked.
 
-The dream was to have one language for the backend, which was almost pure Java at the time, and the frontend, which was
-a mixture of Javascript based frameworks, some experimental Scala approach.
+The dream was to use a single language for both the backend (which was almost pure Java at the time) and the frontend
+(a mixture of JavaScript-based frameworks and some experimental Scala approaches).
 
-Kotlin's multi platform vision seemed to be the game changer to achieve this!
+Kotlin's multiplatform vision seemed like the game-changer needed to achieve this!
 
-If only there had been some web framework available - which simply was not the case...
+If only there had been a web framework available—but that simply wasn't the case...
 
-... but you all know the result: fritz2 was born and has been actively developed and polished until today.
-Over the time, new developers were attracted and merged into the core development team.
+...but you all know the result: fritz2 was born and has been actively developed and polished ever since. 
+Over time, new developers were attracted to the project and joined the core development team.
 
 ## Today
 
-The initial dream has become reality by the way: The technology mix is almost streamlined and there are some dozens of UI
-fritz2 based applications and backend-services (using the fritz2 validation) in production - also by 3rd party
-organizations!
+The initial dream has actually become reality: The technology stack is now streamlined, and there are dozens of 
+fritz2-based UI applications and backend services (using fritz2 validation) in production—including those by 
+third-party organizations!
 
-fritz2 has meanwhile become solid, stable und works reliable in production.
+Meanwhile, fritz2 has become solid, stable, and works reliably in production.
 
-As time goes by, personal interests and professional duties have changed, so Jens and Jan both has left the company and
-moved on to other projects and technologies.
+As time went by, personal interests and professional duties changed. Consequently, both Jens and Jan left the company
+to move on to other projects and technologies.
 
-The fritz2 development still continued, as the core team has been already strong enough to compensate their retirements.
+However, fritz2 development continued, as the core team was already strong enough to compensate for their departure.
 
-In fact, we hope you have not recognized this at all until now, as for the last two years, this was the way it worked.
+In fact, we hope you haven't noticed this change at all until now, as this has been the status quo for the last two years.
 
-In order to reflect those changes and make the deployment work easier for the core devs, we have lately decided
-to create a new github organization to bundle all official fritz2 projects into one place.
-So checkout the [organization](https://github.com/fritztwo), if you have not done this yet.
+To reflect these changes and simplify deployment for the core devs, we recently decided to create a new GitHub 
+organization to bundle all official fritz2 projects in one place. So, please check out the
+[organization](https://github.com/fritztwo) if you haven't done so yet.
 
-You can get the core-framework, and the two template-projects from there. There are also some smaller projects, which
-acts as helper or playground for future developments.
+You can find the core framework and the two template projects there. There are also some smaller projects that act 
+as helpers or playgrounds for future developments.
 
-This website's URL and the maven-central repository remain the same! As we have suggested, as a user of the framework
-those changes are almost agnostic. You must not change anything inside your projects.
+This website's URL and the Maven Central repository remain the same! As mentioned, these changes are practically
+transparent to you as a framework user. You do not need to change anything inside your projects.
 
 ## Tomorrow
 
-fritz2 is still on its road to version 1.0. We believe there is not much work left to do, mostly some polishment of
-missing API features and documentation. We are looking forward to achieve this status soon - not later than 2026,
-we promise this right now!
+fritz2 is still on the road to version 1.0. We believe there isn't much work left to do, mostly polishing missing 
+API features and documentation. We look forward to reaching this milestone soon — no later than 2026, we promise!
 
-We have also plans for the evolvement after the 1.0 release. Those will cover some core framework topics, like some
-rework of store's behaviour, but also some ideas to add some headless components and more abilities of the
-lenses-generator.
+We also have plans for the evolution of the framework after the 1.0 release. These will cover core topics, such as 
+reworking the store's behavior, as well as ideas for adding headless components and expanding the capabilities 
+of the lenses-generator.
 
-So stay tuned and be curious for the upcoming releases!
+So stay tuned and curious about the upcoming releases!
 
-(Trivia: The title of this article is derived from the
-[german title](https://de.wikipedia.org/wiki/Gestern,_heute,_morgen) 
-of the brilliant last episode of the last Star Trek episode of the famous TNG series. It is so fitting - besides 
-our saga continues 😉)
+(Trivia: The title of this article is derived from the 
+[German title](https://de.wikipedia.org/wiki/Gestern,_heute,_morgen) of the brilliant series finale of 
+Star Trek: The Next Generation. It is fitting—and our saga continues 😉)
 
 ## Final words
 
-As this shift into an organization could be seen as a last step of a smooth handover to new developers, we are happy to
-present you some final greeting of the fritz2's initiator Jens Stegemann:
+As this shift to an organization marks the final step of a smooth handover to new developers, we are happy to 
+share a final message from fritz2 initiator Jens Stegemann:
 
-> When we have started this project, it was our aim to craft some lightweight and easy usable web framework based upon
-> Kotlin, to enable a consistent and nice user experience throughout the different software layers. fritz2 has filled
-> the original gap so well, I could have never imagined!
-> 
-> It is always hard to give up some project and move on, but I am so grateful, that we were able to open the
-> development in early days and attract new contributors over the time, so that the development could be continued
-> without me and Jan.
-> 
-> I can promise you out there, that fritz2 is in the best hands possible!
+> When we started this project, our aim was to craft a lightweight and easy-to-use web framework based on Kotlin
+> to enable a consistent and pleasant user experience throughout the different software layers. 
+> fritz2 filled that original gap better than I could have ever imagined!
+>
+> It is always hard to give up a project and move on, but I am very grateful that we were able to open up
+> development early on and attract new contributors over time, ensuring development could continue without me and Jan.
+>
+> I can promise everyone out there that fritz2 is in the best hands possible!
 
-Thank you, Jens and Jan for your passion and dedication over the years!
+Thank you, Jens and Jan, for your passion and dedication over the years!
