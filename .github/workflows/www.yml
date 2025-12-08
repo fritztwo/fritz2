@@ -1,4 +1,4 @@
-name: publish www
+name: Build and deploy next.fritz2.dev
 
 on:
   workflow_dispatch:
@@ -10,6 +10,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -17,7 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
@@ -31,7 +33,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Generating API docs
-        run: ./gradlew dokkaHtmlMultiModule
+        run: ./gradlew dokkaGenerateHtml
 
       - name: Build Demos
         run: ./gradlew build metadataToWww
@@ -41,7 +43,7 @@ jobs:
         run: export NODE_OPTIONS=--openssl-legacy-provider && npm install && npm run build
 
       - name: Copy api docs to webpage
-        run: mkdir -p ./www/_site/api && cp -r ./api/* ./www/_site/api
+        run: mkdir -p ./www/_site/api && cp -r ./build/dokka/html/* ./www/_site/api
 
       - name: Copy headless-demo files to webpage
         run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/dist/js/productionExecutable/* ./www/_site/headless-demo

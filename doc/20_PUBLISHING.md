@@ -13,7 +13,6 @@ as GitHub repository secrets. Below you can find a guide on how to obtain these 
 | `OSSRH_PASSWORD`         | Your Sonatype token password / personal access token.                 |
 | `GPG_SIGNING_KEY`        | Your GPG private key for signing artifacts.                           |
 | `GPG_SIGNING_PASSPHRASE` | The passphrase for your GPG private key.                              |
-| `FRITZ2_WEB_TOKEN`       | Token for deploying the release build of the website to GitHub Pages. |
 
 > [!NOTE]
 > Note: The `snapshot`-version of the website is hosted via GitHub pages in _this_ repository, so no additional secrets
