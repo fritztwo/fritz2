@@ -887,7 +887,7 @@ data class Computer(
 
 As this example is rather complex, the full working implementation of the preceding wishlist
 code snippets can be found below. The styling is done with [tailwindcss](https://tailwindcss.com/), so you can copy and 
-paste it in our well known [fritz2-tailwind-template](https://github.com/jwstegemann/fritz2-tailwind-template) project:
+paste it in our well known [fritz2-tailwind-template](https://github.com/fritztwo/fritz2-tailwind-template) project:
 
 ```kotlin
 // somewhere in your `commonMain`-source-set:

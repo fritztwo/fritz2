@@ -12,9 +12,9 @@ eleventyNavigation:
 ## Create a Project
 
 To use fritz2, set up a Kotlin multiplatform-project using one of these options:
-* [Clone our template from GitHub](https://github.com/jwstegemann/fritz2-template)
+* [Clone our template from GitHub](https://github.com/fritztwo/fritz2-template)
 * If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
-  our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub instead.
+  our [tailwind specific template](https://github.com/fritztwo/fritz2-tailwind-template) from GitHub instead.
 * Check out the [examples](https://fritz2.dev/examples) and see how to use the fritz2 features
 * Have a look at the [official multiplatform documentation](https://kotlinlang.org/docs/multiplatform-get-started.html)
   and use the following `build.gradle.kts` file:
@@ -134,11 +134,11 @@ following lines to your `build.gradle.kts`:
 ```kotlin
 repositories {
     mavenCentral()
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") // new repository here
+    maven("https://central.sonatype.com/repository/maven-snapshots/") // new repository here
 }
 
 val fritz2Version = "1.0-SNAPSHOT" // set the newer snapshot version here
 ```
 
 If you encounter any problems with these snapshot-versions, please
-[open an issue](https://github.com/jwstegemann/fritz2/issues/new/choose).
+[open an issue](https://github.com/fritztwo/fritz2/issues/new/choose).

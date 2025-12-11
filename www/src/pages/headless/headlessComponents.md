@@ -54,7 +54,7 @@ kotlin {
 
 ::: info
 If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
-our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub. 
+our [tailwind specific template](https://github.com/fritztwo/fritz2-tailwind-template) from GitHub. 
 :::
 
 ## Structure of a Component
