@@ -11,6 +11,8 @@ author: chausknecht
 readtime: 15
 ---
 
+![paradigm-shift-for-components](/img/paradigm-shift-for-components.jpg)
+
 ## History
 
 Since early 2020, we have been developing a frontend library at and for [Öffentliche Versicherung](https://www.oeffentliche.de)
