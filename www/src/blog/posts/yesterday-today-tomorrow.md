@@ -82,13 +82,13 @@ Star Trek: The Next Generation. It is fitting—and our saga continues 😉)
 As this shift to an organization marks the final step of a smooth handover to new developers, we are happy to 
 share a final message from fritz2 initiator Jens Stegemann:
 
-> When we started this project, our aim was to craft a lightweight and easy-to-use web framework based on Kotlin
-> to enable a consistent and pleasant user experience throughout the different software layers. 
-> fritz2 filled that original gap better than I could have ever imagined!
+> When we started this project, our aim was to craft a lightweight and easy-to-use web framework based on built-in 
+> Kotlin technologies to enable a consistent and pleasant user experience throughout the different software layers.
+> fritz2 filled that original gap.
 >
 > It is always hard to give up a project and move on, but I am very grateful that we were able to open up
 > development early on and attract new contributors over time, ensuring development could continue without me and Jan.
 >
-> I can promise everyone out there that fritz2 is in the best hands possible!
+> I am happy that fritz2 is in the best hands possible!
 
 Thank you, Jens and Jan, for your passion and dedication over the years!
