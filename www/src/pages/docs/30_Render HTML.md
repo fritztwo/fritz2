@@ -146,7 +146,7 @@ the `jsMain/resources/index.html` file.
 (e.g. [Bootstrap](https://getbootstrap.com/docs/5.3/getting-started/introduction/#quick-start)) - include it
 appropriately inside the `jsMain/resources/index.html` file.
 3. Use dynamic CSS with [tailwindcss](https://tailwindcss.com/) by using our 
-[ready-to-use template](https://github.com/jwstegemann/fritz2-tailwind-template).
+[ready-to-use template](https://github.com/fritztwo/fritz2-tailwind-template).
 4. Use any other dynamic CSS by configuring [webpack](https://webpack.js.org/loaders/#styling) appropriately.
 :::
 

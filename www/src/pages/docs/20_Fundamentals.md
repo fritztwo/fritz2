@@ -329,7 +329,7 @@ essentials of stores.
 
 This is the full source of the example above, including all styling to make it look like the screenshot.
 You can just copy and paste it into the vanilla 
-[tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template) project, replacing the `main` function, and 
+[tailwind template](https://github.com/fritztwo/fritz2-tailwind-template) project, replacing the `main` function, and 
 then running the app.
 
 ```kotlin

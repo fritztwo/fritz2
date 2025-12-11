@@ -57,7 +57,7 @@ aspects:
 It was therefore obvious to us to integrate such a component library directly into fritz2, in order to use it as the
 basis for the applications of the "Öffentliche Versicherung".
 
-We started with version [0.8](https://github.com/jwstegemann/fritz2/releases/tag/v0.8), to integrate
+We started with version [0.8](https://github.com/fritztwo/fritz2/releases/tag/v0.8), to integrate
 a [component library](https://components.fritz2.dev/#Welcome) into fritz2, which then - including a custom declarative
 language for styling - has been extended in the following versions.
 
@@ -265,7 +265,7 @@ In addition, one would still have to style each building block accordingly withi
 and fully functional surface unit, which was omitted here for reasons of space and simplicity. In principle, one injects
 the styling into the function block as the first parameter, analogous to the known tag factory functions. The source
 code of
-the [example for a RadioGroup](https://github.com/jwstegemann/fritz2/blob/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo/components/RadioGroup.kt)
+the [example for a RadioGroup](https://github.com/fritztwo/fritz2/blob/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo/components/RadioGroup.kt)
 from the `headless-demo` project clearly shows that the styling specifications make the whole thing only slightly more
 complex.
 
@@ -307,12 +307,12 @@ about your feedback.
 
 To get started, please refer to the [documentation](/headless) of the headless components, which also explains some of
 the most relevant basic concepts. Furthermore, have a look at
-the [`headless-demo` module](https://github.com/jwstegemann/fritz2/tree/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo)
+the [`headless-demo` module](https://github.com/fritztwo/fritz2/tree/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo)
 which contains all the demos from the docs.
 
 For an easier introduction to the combination of fritz2 and tailwindcss, we have 
-created a dedicated [template project](https://github.com/jwstegemann/fritz2-tailwind-template)
-in addition to the [well known](https://github.com/jwstegemann/fritz2-template) one. We encourage you to use those
+created a dedicated [template project](https://github.com/fritztwo/fritz2-tailwind-template)
+in addition to the [well known](https://github.com/fritztwo/fritz2-template) one. We encourage you to use those
 templates as basis for your own fritz2 based applications.
 
 In the future, there will be more blog articles around the topic "component building with headless".
