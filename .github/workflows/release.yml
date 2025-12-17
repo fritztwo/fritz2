@@ -36,7 +36,7 @@ jobs:
           node-version: 20
 
       - name: Generating API docs
-        run: ./gradlew dokkaHtmlMultiModule
+        run: ./gradlew dokkaGenerateHtml
 
       - name: Build Demos
         run: ./gradlew build metadataToWww
