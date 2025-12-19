@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.google.devtools.ksp")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.ksp)
 }
 
 repositories {
@@ -20,6 +20,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":core"))
+                implementation(libs.kotlinx.serialization.json)
             }
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
@@ -35,7 +36,7 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", project(":lenses-annotation-processor"))
+    kspCommonMainMetadata(project(":lenses-annotation-processor"))
 }
 
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {

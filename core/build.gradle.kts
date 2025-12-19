@@ -1,7 +1,7 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetbrains.dokka)
     id("fritz2-publishing-config")
 }
 
@@ -24,25 +24,25 @@ kotlin {
         }
         commonMain {
             dependencies {
-                api(KotlinX.coroutines.core)
+                api(libs.kotlinx.coroutines.core)
             }
         }
         commonTest {
             dependencies {
-                implementation(Kotlin.test)
-                implementation(Kotlin.test.common)
-                implementation(Kotlin.test.annotationsCommon)
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlin.test.common)
+                implementation(libs.kotlin.test.annotations.common)
             }
         }
         jsMain {
             dependencies {
-                api(KotlinX.coroutines.core)
+                api(libs.kotlinx.coroutines.core)
             }
         }
         jsTest {
             dependencies {
-                implementation(Kotlin.test.js)
-                implementation(KotlinX.serialization.json)
+                implementation(libs.kotlin.test.js)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
     }

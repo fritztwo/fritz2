@@ -1,6 +1,8 @@
+import dev.fritz2.gradle.npm
+
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.dokka")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.jetbrains.dokka)
     id("fritz2-publishing-config")
 }
 
@@ -31,13 +33,13 @@ kotlin {
         }
         jsMain {
             dependencies {
-                api(npm("@floating-ui/dom","_"))
-                api(npm("scroll-into-view-if-needed", "_"))
+                api(npm(libs.floatingui.dom))
+                api(npm(libs.scrollintoview))
             }
         }
         jsTest {
             dependencies {
-                implementation(Kotlin.test.js)
+                implementation(libs.kotlin.test.js)
             }
         }
     }

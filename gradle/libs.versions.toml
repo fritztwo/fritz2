@@ -1,0 +1,72 @@
+[versions]
+kotlin = "2.2.20"
+ksp = "2.2.20-2.0.4"
+kotlinpoet = "2.2.0"
+kctfork = "0.10.1"
+ktor = "3.3.3"
+
+
+[libraries]
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.10.2" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.7.1" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-scriptruntime = { module = "org.jetbrains.kotlin:kotlin-script-runtime", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
+kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+kotlin-test-js = { module = "org.jetbrains.kotlin:kotlin-test-js", version.ref = "kotlin" }
+
+vanniktech-mavenpublishplugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version = "0.35.0" }
+
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
+
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version = "6.0.0" }
+assertj-core = { module = "org.assertj:assertj-core", version = "3.27.6" }
+
+zacsweers-kctfork-core = { module = "dev.zacsweers.kctfork:core", version.ref = "kctfork" }
+zacsweers-kctfork-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kctfork" }
+
+google-autoservice-annotations = { module = "com.google.auto.service:auto-service-annotations", version = "1.1.1" }
+google-ksp-symbolprocessing = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-calllogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-server-contentnegotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-plugin-jacksonserialization = { module = "io.ktor:ktor-serialization-jackson-jvm", version.ref = "ktor" }
+
+logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.5.19" }
+
+# Headless
+floatingui-dom = { group = "floating-ui", name = "dom", version = "1.7.2" }
+scrollintoview = { group = "npm", name = "scroll-into-view-if-needed", version = "3.1.0" }
+
+# Tailwind
+tailwindcss-core = { group = "npm", name = "tailwindcss", version = "3.4.18" }
+tailwindcss-forms = { group = "tailwindcss", name = "forms", version = "0.5.10" }
+postcss-core = { group = "npm", name = "postcss", version = "8.5.6" }
+postcss-loader = { group = "npm", name = "postcss-loader", version = "8.2.0" }
+autoprefixer = { group = "npm", name = "autoprefixer", version = "10.4.21" }
+css-loader = { group = "npm", name = "css-loader", version = "7.1.2" }
+style-loader = { group = "npm", name = "style-loader", version = "4.0.0" }
+cssnano = { group = "npm", name = "cssnano", version = "7.1.1" }
+
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+jetbrains-dokka = { id = "org.jetbrains.dokka", version = "2.1.0" }
+jetbrains-binary-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.18.1" }
+
+# keep at 0.1.x until we can figure out the new magic gradle incantation for configuring this
+execfork = { id = "com.github.psxpaul.execfork", version = "0.1.15" }

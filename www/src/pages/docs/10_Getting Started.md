@@ -64,7 +64,7 @@ kotlin {
 
 // KSP support for Lens generation
 dependencies {
-    add("kspCommonMainMetadata", "dev.fritz2:lenses-annotation-processor:$fritz2Version")
+    kspCommonMainMetadata(project("dev.fritz2:lenses-annotation-processor:$fritz2Version"))
 }
 
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
