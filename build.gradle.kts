@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin.Companion.kotlinNodeJsEnvSpec
 
 plugins {
-    kotlin("multiplatform") apply false
-    kotlin("plugin.serialization")  apply false
-    id("com.google.devtools.ksp") apply false
-    id("org.jetbrains.dokka")
-    id("org.jetbrains.kotlinx.binary-compatibility-validator")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.google.ksp) apply false
+    alias(libs.plugins.jetbrains.dokka)
+    alias(libs.plugins.jetbrains.binary.validator)
     signing
 }
 

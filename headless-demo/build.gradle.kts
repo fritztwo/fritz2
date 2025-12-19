@@ -1,8 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import dev.fritz2.gradle.npm
 
 plugins {
-    kotlin("multiplatform")
-    id("com.google.devtools.ksp")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.google.ksp)
 }
 
 kotlin {
@@ -27,23 +28,23 @@ kotlin {
         jsMain {
             dependencies {
                 // tailwind
-                implementation(npm("tailwindcss", "_"))
-                implementation(npm("@tailwindcss/forms", "_"))
+                implementation(npm(libs.tailwindcss.core))
+                implementation(npm(libs.tailwindcss.forms))
 
                 // webpack
-                implementation(devNpm("postcss", "_"))
-                implementation(devNpm("postcss-loader", "_"))
-                implementation(devNpm("autoprefixer", "_"))
-                implementation(devNpm("css-loader", "_"))
-                implementation(devNpm("style-loader", "_"))
-                implementation(devNpm("cssnano", "_"))
+                implementation(npm(libs.postcss.core))
+                implementation(npm(libs.postcss.loader))
+                implementation(npm(libs.autoprefixer))
+                implementation(npm(libs.css.loader))
+                implementation(npm(libs.style.loader))
+                implementation(npm(libs.cssnano))
             }
         }
     }
 }
 
 dependencies {
-    add("kspCommonMainMetadata", project(":lenses-annotation-processor"))
+    kspCommonMainMetadata(project(":lenses-annotation-processor"))
 }
 
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {

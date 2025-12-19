@@ -1,7 +1,7 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetbrains.dokka)
     id("fritz2-publishing-config")
 }
 
@@ -12,7 +12,7 @@ kotlin {
         jsMain {
             dependencies {
                 api(project(":core"))
-                api(KotlinX.serialization.json)
+                api(libs.kotlinx.serialization.json)
             }
         }
     }
