@@ -15,7 +15,7 @@ To use fritz2, set up a Kotlin multiplatform-project using one of these options:
 * [Clone our template from GitHub](https://github.com/fritztwo/fritz2-template)
 * If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
   our [tailwind specific template](https://github.com/fritztwo/fritz2-tailwind-template) from GitHub instead.
-* Check out the [examples](https://fritz2.dev/examples) and see how to use the fritz2 features
+* Check out the [examples](/examples) and see how to use the fritz2 features
 * Have a look at the [official multiplatform documentation](https://kotlinlang.org/docs/multiplatform-get-started.html)
   and use the following `build.gradle.kts` file:
 
@@ -72,6 +72,22 @@ project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
+```
+
+### KSP incremental builds
+
+:::info
+As of now, there may be issues with generated lenses being deleted after the first build.  
+This is due to an issue with KSP's incremental build feature not seeing any code on rebuild and thus deleting previously
+generated lenses.
+
+This can be mitigated by disabling KSP incremental builds in order to force lenses-generation on each build.  
+__Warning__: There may be a negative impact on performance in larger projects.
+:::
+
+```properties
+# gradle.properties
+ksp.incremental=false
 ```
 
 ## Organize Your Code
