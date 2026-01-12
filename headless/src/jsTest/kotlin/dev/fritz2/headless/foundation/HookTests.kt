@@ -96,7 +96,7 @@ class HookTests {
         delay(100)
 
         assertNotNull(parent)
-        val results = parent!!.domNode.childNodes.asList()
+        val results = parent.domNode.childNodes.asList()
         assertEquals(3, results.count())
         assertContentEquals(
             expected,
