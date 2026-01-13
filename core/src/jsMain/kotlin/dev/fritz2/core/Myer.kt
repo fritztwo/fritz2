@@ -89,7 +89,7 @@ object Myer {
                             //turn oder of elements!
                             lastPatch = Patch.InsertMany(buildList {
                                 add(element)
-                                addAll((lastPatch as Patch.InsertMany<T>).elements)
+                                addAll(lastPatch.elements)
                             }, lastPatch.index)
                         }
                         // combine directly following insert and delete of same element as move

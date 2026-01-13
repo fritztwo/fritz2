@@ -124,8 +124,8 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
     // then the active element (document.activeElement) is this anchor, which is expected.
     // However, in that case the default focus styles are not applied *unless* you
     // also add this tabindex.
-    next?.let {
-        if (!it.hasAttribute("tabindex")) it.setAttribute("tabindex", "0")
+    if (!next.hasAttribute("tabindex")) {
+        next.setAttribute("tabindex", "0")
     }
 
     return FocusResult.Success
@@ -333,10 +333,11 @@ private fun Tag<HTMLElement>.setInitialFocusOnDemand(setInitialFocus: InitialFoc
  * @param maxRetries maximum retries
  */
 suspend fun Tag<HTMLElement>.setFocus(maxRetries: Int = 10) {
-    for (i in 0 until maxRetries) {
-        window.awaitAnimationFrame()
-        domNode.focus()
-        if (document.activeElement == domNode) break
+    repeat(maxRetries) {
+        if (document.activeElement != domNode) {
+            window.awaitAnimationFrame()
+            domNode.focus()
+        }
     }
 }
 
