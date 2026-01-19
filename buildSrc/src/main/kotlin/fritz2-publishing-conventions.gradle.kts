@@ -2,6 +2,7 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.MavenPublishBasePlugin
+import com.vanniktech.maven.publish.SourcesJar
 import org.gradle.kotlin.dsl.configure
 
 /*
@@ -14,7 +15,7 @@ coordinates, POM and other metadata configuration.
 Usage:
 ```kotlin
 plugins {
-    id("fritz2-publishing-config")
+    id("fritz2-publishing-conventions")
 }
 ```
  */
@@ -28,7 +29,7 @@ extensions.configure<MavenPublishBaseExtension> {
     configure(
         KotlinMultiplatform(
             javadocJar = JavadocJar.Dokka("dokkaGenerateHtml"),
-            sourcesJar = true,
+            sourcesJar = SourcesJar.Sources(),
         )
     )
 
