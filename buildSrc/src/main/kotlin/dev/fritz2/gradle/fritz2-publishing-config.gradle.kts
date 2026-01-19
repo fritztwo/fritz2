@@ -34,16 +34,6 @@ extensions.configure<MavenPublishBaseExtension> {
 
     coordinates(project.group.toString(), project.name, project.version.toString())
 
-    // Currently, there is an issue with the publishing plugin, preventing us from publishing to the local Maven
-    // repository for testing (see: https://github.com/vanniktech/gradle-maven-publish-plugin/issues/1113).
-    // This is a variant of the workaround described in the link above.
-    project.gradle.taskGraph.whenReady {
-        val taskIsMavenLocal = allTasks.any {
-            it.name == "publishToMavenLocal" || it.path.endsWith("publishToMavenLocal")
-        }
-        project.extensions.getByType<SigningExtension>().isRequired = !taskIsMavenLocal
-    }
-
     pom {
         name.set("fritz2")
         description.set("Easily build reactive web-apps in Kotlin based on flows and coroutines")
