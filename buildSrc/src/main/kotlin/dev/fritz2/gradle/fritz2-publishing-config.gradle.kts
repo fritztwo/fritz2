@@ -41,7 +41,9 @@ extensions.configure<MavenPublishBaseExtension> {
         val taskIsMavenLocal = allTasks.any {
             it.name == "publishToMavenLocal" || it.path.endsWith("publishToMavenLocal")
         }
-        project.extensions.getByType<SigningExtension>().isRequired = !taskIsMavenLocal
+        if (taskIsMavenLocal) {
+            project.extensions.getByType<SigningExtension>().isRequired = false
+        }
     }
 
     pom {
