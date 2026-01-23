@@ -3,7 +3,7 @@ import dev.fritz2.gradle.npm
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     alias(libs.plugins.jetbrains.dokka)
-    id("fritz2-publishing-config")
+    id("fritz2-publishing-conventions")
 }
 
 kotlin {
