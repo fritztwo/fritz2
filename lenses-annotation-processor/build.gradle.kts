@@ -2,6 +2,7 @@ plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.jetbrains.dokka)
+    id("fritz2-jvm-conventions")
     id("fritz2-publishing-conventions")
 }
 

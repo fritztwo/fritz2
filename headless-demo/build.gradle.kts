@@ -4,6 +4,7 @@ import dev.fritz2.gradle.npm
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     alias(libs.plugins.google.ksp)
+    id("fritz2-jvm-conventions")
 }
 
 kotlin {
