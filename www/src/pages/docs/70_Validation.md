@@ -4,32 +4,32 @@ description: "Learn how to validate the data-models of fritz2 web-app"
 layout: layouts/docs.njk
 permalink: /docs/validation/
 eleventyNavigation:
-    key: validation
-    parent: documentation
-    title: Validation
-    order: 70
+  key: validation
+  parent: documentation
+  title: Validation
+  order: 70
 ---
 
-When accepting user-input, it is a nice idea to validate the data before processing it any further.
+When accepting user input, it's a good idea to validate the data before processing it further.
 
-To do validation in fritz2, you first have to create a `Validation` object. 
-To do so you can use the global `validation` function which has the following type parameters:
-* the type of data to validate
-* a type for metadata you want to forward from `Handler`s to the validation (`Unit` by default if you don't need this)
-* a type describing the validation-results (like a message, etc.), implementing the minimal `ValidationMessage` interface
+To validate in fritz2, create a Validation object. Use the global validation function, which takes these type
+parameters:
 
-It is recommended to put your validation code inside the companion object of your data-class in the `commonMain` 
-source-set of your multiplatform-project. Code in `commonMain` can be used in `jsMain` (frontend) and `jvmMain` (backend). 
+- the type of data to validate
+- a type for metadata you want to forward from Handlers to the validation (Unit by default)
+- a type describing the validation results (e.g., a message), which must implement the ValidationMessage interface
 
-Inside the `validation` function you have access to the `Inspector` of your data model. It gives you the paths to the 
-data by calling the `map()` method which, like in store-mapping, requires a lens as parameter. The mapped result is also 
-an `Inspector` and has two attributes `data` and `path` which you can use during the validation of the specific member 
-of the model.
+We recommend placing your validation code in the companion object of your data class inside the commonMain source set of
+your multiplatform project. Code in `commonMain` can be used from `jsMain` (frontend) and `jvmMain` (backend).
 
-To add a validation-message to the list of messages, use the `add` function.
+Inside the validation function you have access to an `Inspector` for your data model. You can get paths to model members
+by calling `map()` with a lens (similar to store mapping). The result of `map()` is another Inspector with two
+properties: data and path, which you can use when validating that specific member.
+
+To add a validation message to the list, call the `add()` function.
 
 ```kotlin
-data class Message(override val path: String, val severity: Severity, val text: String): ValidationMessage {
+data class Message(override val path: String, val severity: Severity, val text: String) : ValidationMessage {
     override val isError: Boolean = severity > Severity.Warning
 }
 
@@ -41,14 +41,14 @@ data class Person(
     companion object {
         val validation: Validation<Person, Unit, Message> = validation<Person, Message> { inspector ->
             val name = inspector.map(Person.name())
-            if(name.data.trim().isBlank()) {
+            if (name.data.trim().isBlank()) {
                 add(Message(name.path, Severity.Error, "Please provide a name"))
             }
 
             val age = inspector.map(Person.age())
-            if(age.data < 1) {
+            if (age.data < 1) {
                 add(Message(age.path, Severity.Error, "Please correct the age"))
-            } else if(age.data > 100) {
+            } else if (age.data > 100) {
                 add(Message(age.path, Severity.Warning, "Is the person really older then 100 years‽"))
             }
         }
@@ -61,7 +61,8 @@ enum class Severity {
     Error
 }
 ```
-You can structure and implement your validation-rules with everything Kotlin offers. 
+
+You can structure and implement your validation-rules with everything Kotlin offers.
 
 Now you can use the `Validation` object in your `jsMain` code:
 
@@ -69,10 +70,10 @@ Now you can use the `Validation` object in your `jsMain` code:
 val store: ValidatingStore<Person, Unit, Message> = storeOf(Person("Chris", 42), Person.validation, job = Job())
 val msgs: Flow<List<Message>> = store.messages
 ```
-By default, a `ValidatingStore` automatically validates its data after changes occur to update the list of messages.
-You can access these validation-messages with `store.messages`. It's `Flow<List<M>>` where `M` is your 
-`ValidationMessage`-type. Handle the `Flow` of messages like any other `Flow` of a `List`, for example by rendering it 
-to HTML:
+
+By default, a `ValidatingStore` automatically validates its data after changes and updates the message list.
+You can access these validation messages via `store.messages`: a `Flow<List<M>>` where `M` is your `ValidationMessage`
+type. Handle this `Flow` like any other `Flow` of a `List` — for example, render it to HTML:
 
 ```kotlin
 // create some messages with shady data
@@ -89,13 +90,13 @@ render {
 }
 ```
 
-If you want to start the validation process in a specific handler you can do so by implementing the `ValidatingStore` 
+If you want to start the validation process in a specific handler you can do so by implementing the `ValidatingStore`
 by yourself:
 
 ```kotlin
-object PersonStore: ValidatingStore<Person, Unit, Message>(Person("", 0), Person.validation, job = Job()) {
+object PersonStore : ValidatingStore<Person, Unit, Message>(Person("", 0), Person.validation, job = Job()) {
     val save = handle {
-        if(validate(it).valid) {
+        if (validate(it).valid) {
             // send request to server...
             Person("", 0)
         } else it
@@ -106,12 +107,67 @@ object PersonStore: ValidatingStore<Person, Unit, Message>(Person("", 0), Person
     }
 }
 ```
-By calling the `resetMessages()` function you can manually reset the list of messages if needed.
+
+Call `resetMessages()` to manually clear the list of messages when needed.
 
 Have a look at a more complete example [here](/examples/validation).
 
 ### Delegating Validation in Sealed Hierarchies
 
-:::warning
-Documentation coming soon
-:::
+Since sub-`Inspector`s are created using their `map` function and a `Lens`, lenses generated for sealed class 
+hierarchies can be utilized during validation just like with a `Store`.
+
+Let's modify the wish list example from the 
+[store mapping chapter](/docs/storemapping/#dealing-with-sealed-type-hierarchies) by adding some validation logic:
+
+```kotlin
+// Since this example does not use fritz2-headless, we define a validation message type on our own:
+data class Message(
+    override val isError: Boolean,
+    override val path: String,
+    val message: String
+) : ValidationMessage
+
+// In order to add our validation logic, we take the `Wish` class from the store mapping example and add a `Validation` 
+// to its companion object
+@Lenses
+sealed interface Wish {
+    val label: String
+
+    companion object {
+        val validation: Validation<Wish, Unit, Message> = validation { inspector ->
+            if (inspector.data.label.isEmpty()) {
+//              ^^^^^^^^^^^^^^
+//              Since all wishes share a common name property, we simply validate it without any special lenses.
+//              We could also use a delegating lens.
+                add(Message(isError = true, inspector.path, "Name is missing"))
+            }
+
+            // The rest of the validation depends on the concrete type of `Wish`.
+            // Just like with the store mapping, we need to manually check its type before using the respective
+            // up-casting lens!
+            when (inspector.data) {
+                is Computer -> {
+                    val ram = inspector.map(Wish.computer().ramInKb())
+//                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+//                                          Being sure the actual type is `Computer`, we may now use the up-casting
+//                                          lens. We may also chain it in order to validate a `Computer`-specific
+//                                          property like `ramInKb`.
+                    if (ram.data < 4096) {
+                        add(Message(isError = false, inspector.path,"Warning Low amount of RAM"))
+                    }
+                }
+                is LightSaber -> {
+                    val color = inspector.map(Wish.lightSaber().color())
+//                                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+//                                            Just like with `Computer`, we use the respective up-casting lens for
+//                                            `LightSaber` to validate lightsaber properties.
+                    if (color.data == Color.Red) {
+                        add(Message(isError = true, inspector.path, "Light saber cannot be red!"))
+                    }
+                }
+            }
+        }
+    }
+}
+```
