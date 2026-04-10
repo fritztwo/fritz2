@@ -7,8 +7,10 @@ eleventyNavigation:
   key: validation
   parent: documentation
   title: Validation
-  order: 70
+  order: 60
 ---
+
+## Overview
 
 When accepting user input, it's a good idea to validate the data before processing it further.
 
@@ -18,6 +20,16 @@ parameters:
 - the type of data to validate
 - a type for metadata you want to forward from Handlers to the validation (Unit by default)
 - a type describing the validation results (e.g., a message), which must implement the ValidationMessage interface
+
+fritz2 simplifies data validation within your application by providing a combination of conventions, data types, and 
+factory functions.
+
+:::info
+By utilizing [headless components](/headless/), validation messages are automatically associated with their 
+respective components, requiring no additional effort.
+:::
+
+### Simple Example
 
 We recommend placing your validation code in the companion object of your data class inside the commonMain source set of
 your multiplatform project. Code in `commonMain` can be used from `jsMain` (frontend) and `jvmMain` (backend).
@@ -29,6 +41,12 @@ properties: data and path, which you can use when validating that specific membe
 To add a validation message to the list, call the `add()` function.
 
 ```kotlin
+enum class Severity {
+    Info,
+    Warning,
+    Error
+}
+
 data class Message(override val path: String, val severity: Severity, val text: String) : ValidationMessage {
     override val isError: Boolean = severity > Severity.Warning
 }
@@ -39,6 +57,7 @@ data class Person(
     val age: Int
 ) {
     companion object {
+        // Define some validation object by the `validation` factory function:
         val validation: Validation<Person, Unit, Message> = validation<Person, Message> { inspector ->
             val name = inspector.map(Person.name())
             if (name.data.trim().isBlank()) {
@@ -54,22 +73,27 @@ data class Person(
         }
     }
 }
-
-enum class Severity {
-    Info,
-    Warning,
-    Error
-}
 ```
 
 You can structure and implement your validation-rules with everything Kotlin offers.
 
-Now you can use the `Validation` object in your `jsMain` code:
+Now you can use the `Validation` object in your `commonMain`, `jsMain` or `jvmMain`-code:
 
 ```kotlin
-val store: ValidatingStore<Person, Unit, Message> = storeOf(Person("Chris", 42), Person.validation, job = Job())
-val msgs: Flow<List<Message>> = store.messages
+val invalidPerson = Person("", 101)
+Person.validation(invalidPerson)
+// gives a List of Messages:
+// [Message(.name, Please provide a name, Severity.Error),
+// Message(.age, Is the person really older then 100 years‽, Severity.Warning)]
 ```
+
+## Essentials
+
+### Integrate validation into stores
+
+Since fritz2 stores are the central entities for managing state, it is only natural to combine the update and 
+validation processes. This is achieved using the specialized `ValidatingStore`, which is a subtype of the standard 
+fritz2 `Store`.
 
 By default, a `ValidatingStore` automatically validates its data after changes and updates the message list.
 You can access these validation messages via `store.messages`: a `Flow<List<M>>` where `M` is your `ValidationMessage`
@@ -111,6 +135,33 @@ object PersonStore : ValidatingStore<Person, Unit, Message>(Person("", 0), Perso
 Call `resetMessages()` to manually clear the list of messages when needed.
 
 Have a look at a more complete example [here](/examples/validation).
+
+### Validating Object Hierarchies
+
+TODO:
+- simple domain model (maybe refine `Person` further with `Address` and `Contacts`)
+- show calling a validation from another
+
+### Using Meta Data
+
+TODO:
+- adapt validation to some "context"; often UI-State or some data from a different subtree of the model
+- validate only some sub model due to UI portion (data for `page1`)
+
+### Validating Collections
+
+TODO:
+- show using the application of mapping Lenses inside `forEach`
+
+### About Inspectors and Paths
+
+TODO:
+- inspectors are some kind od "readonly"-Stores
+- constructs paths by applying Lenses as mapped stores do
+- paths can be used to "select / filter" messages to show in the UI
+- refer headless components and their `ComponentValidationMessage`
+
+## Advanced Topics
 
 ### Delegating Validation in Sealed Hierarchies
 
