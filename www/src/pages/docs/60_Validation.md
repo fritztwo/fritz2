@@ -19,7 +19,7 @@ parameters:
 
 - the type of data to validate
 - a type for metadata you want to forward from Handlers to the validation (Unit by default)
-- a type describing the validation results (e.g., a message), which must implement the ValidationMessage interface
+- a type describing the validation results (e.g., a message), which must implement the `ValidationMessage` interface
 
 fritz2 simplifies data validation within your application by providing a combination of conventions, data types, and 
 factory functions.
@@ -88,8 +88,10 @@ Now you can use the `Validation` object in your `commonMain`, `jsMain` or `jvmMa
 val invalidPerson = Person("", 101)
 Person.validation(invalidPerson)
 // gives a List of Messages:
-// [Message(path=.name, severity=Error, text=Please provide a name), 
-// Message(path=.name, severity=Warning, text=Is the person really older than 100 years‽)]
+// [
+// Message(path=.name, severity=Error, text=Please provide a name), 
+// Message(path=.name, severity=Warning, text=Is the person really older than 100 years‽)
+// ]
 ```
 
 ### Inspectors on the Surface
@@ -116,7 +118,7 @@ If you follow these conventions, [Headless UI components](/headless), for exampl
 validation messages associated with a mapped store in a `value` field without any additional effort.
 
 More in-depth information can be found in the section 
-[About Inspectors and Paths](/docs/validation/about-inspectors-and-paths).
+[Of Inspectors and Paths](#of-inspectors-and-paths).
 
 ## Essentials
 
@@ -257,15 +259,8 @@ data class Person(
 
             // create `Inspector<List<Address>>`...
             val addresses = inspector.map(Person.addresses())
-            addAll(
-                // ... and validate all of its entries by index for identification purpose
-                addresses.data.indices.flatMap { index ->
-                    Address.validate(addresses.mapByIndex(index))
-                    //                         ^^^^^^^^^^^^^^^^^
-                    //                         apply mapping with distinct identifier
-                    //                         for `List` this is the index
-                }
-            )
+            // ... and validate all of its entries with an appropriate convenience function
+            addresses.inspectEach { address -> addAll(Address.validate(address)) }
         }
     }
 }
@@ -273,8 +268,10 @@ data class Person(
 
 For collections, the `Inspector` provides mapping functions analogous to those for `Store`s, as described in the
 [Store Mapping](/docs/storemapping/#summary-of-store-mapping-factories) chapter. 
-In this case, we use the index, which is the canonical choice for a field of type `List<T>`. 
-We generate this index from the inspector's data for the addresses.
+In this case, we use a convenience function `inspectEach` on a `List`, which internally uses the index as identifier
+for each entry, which is the canonical choice for a field of type `List<T>`.
+
+There is a [complete overview](#summary-of-inspector-mappings) of all functions of an `Inspector`
 
 Just like with the simple integration of an external validator, we must not forget to include its validation messages.
 
@@ -399,16 +396,104 @@ If you require more than just a simple `Enum`, you should create a **dedicated**
 all the necessary data.
 :::
 
+### Summary of Inspector-Mappings
 
-### About Inspectors and Paths
+| Factory                                                                                   | Use case                                                                                                                                                                                      |
+|-------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Inspector<D>.map(lens: Lens<D, X>): Inspector<X>`                                        | Most generic map-function. Maps any `Inspector` given a `Lens`. Use for model destructuring with automatic generated lenses for example.                                                      |
+| `Inspector<D?>.mapNull(default: D): Inspector<D>`                                         | Maps any nullable `Inspector` given a `Lens` to a `Inspector` of a definitely none nullable `T`.                                                                                              |
+| `Inspector<T>.mapNullable(placeholder: T): Inspector<T?>`                                 | Maps a `Inspector` of `T` to a `Inspector` of `T?`, replacing the given `placeholder` from the parent with `null` in the sub inspector. This function is the reverse equivalent of `mapNull`. |
+| `Inspector<List<D>>.mapByElement(element: D, idProvider: IdProvider<D, I>): Inspector<D>` | Maps a `Inspector` of a `List<T>` to one element of that list. Works for entities, as a stable Id is needed.                                                                                  |
+| `Inspector<List<D>>.mapByIndex(index: Int): Inspector<D>`                                 | Maps a `Inspector` of a `List<T>` to one element of that list using the index.                                                                                                                    |
+| `Inspector<Map<K, V>>.mapByKey(key: K): Inspector<V>`                                     | Maps a `Inspector` of a `Map<T>` to one element of that map using the key.                                                                                                                        |
 
-TODO:
-- inspectors are some kind od "readonly"-Stores
-- constructs paths by applying Lenses as mapped stores do
-- paths can be used to "select / filter" messages to show in the UI
-- refer headless components and their `ComponentValidationMessage`
+There are also those convenience functions, that reduce the boilerplate of validating collections:
+
+| Factory                                                                                        | Use case                                                                                      |
+|------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `Inspector<List<D>>.inspectEach(idProvider: IdProvider<D, I>, action: (Inspector<D>) -> Unit)` | Takes an `IdProvider<D, I>` and applies the given `action` to all elements of the list.       |
+| `Inspector<List<D>>.inspectEach(action: (Inspector<D>) -> Unit)`                               | Applies the given `action` to all elements of the list. Uses the index as identifier.         |
+| `Inspector<Map<K, V>>.inspectEach(action: (K, Inspector<V>) -> Unit)`                          | Applies the given `action` to all elements of the map. Uses the key of the map as identifier. |
 
 ## Advanced Topics
+
+### Of Inspectors and Paths
+
+As described at the beginning, the primary purpose of inspectors within validation is to encapsulate data access in 
+such a way that it produces the same *mapped* path as the one generated when mapping the main store down to a leaf node.
+
+By convention, every mapping call takes the ID of a `Lens` and appends it to the existing path using a dot (`.`). 
+This process occurs during the mapping of both stores and inspectors:
+
+```kotlin
+val chris =  Person(
+    "Chris",
+    48,
+    listOf(
+        Address("Rosestreet", "22", "Oaker", "Germany"),
+    )
+)
+
+val inspectedPerson = inspectorOf(chris)
+val storedPerson = storeOf(chris, Job())
+```
+
+Evaluating these two objects allows us to observe the similarities:
+
+```kotlin
+inspectedPerson.data
+// Person(name=Chris, age=48, addresses=[Address(street=Rosestreet, zipCode=22, city=Oaker, country=Germany)])
+
+storedPerson.current
+// Person(name=Chris, age=48, addresses=[Address(street=Rosestreet, zipCode=22, city=Oaker, country=Germany)])
+
+inspectedPerson.path
+// "" -> is empty as the person-objet is top-level
+
+storedPerson.path
+// "" -> is empty as the person-objet is top-level
+```
+
+Going two levels deeper into the object tree reveals the following:
+
+```kotlin
+val inspectedAddress = inspectedPerson.map(Person.addresses()).mapByIndex(0)
+val storedAddress = storedPerson.map(Person.addresses()).mapByIndex(0)
+
+inspectedAddress.data
+// Address(street=Rosestreet, zipCode=22, city=Oaker, country=Germany)
+
+storedAddress.data
+// Address(street=Rosestreet, zipCode=22, city=Oaker, country=Germany)
+
+inspectedAddress.path
+// .addresses.0
+
+storedAddress.path
+// .addresses.0
+```
+
+You can clearly see the dot notation of the path, which — similar to [XPATH](https://en.wikipedia.org/wiki/XPath) 
+or [JSON-Path](https://en.wikipedia.org/wiki/JSONPath) in their simplest forms — describes the position of an object 
+within the overall model, starting from the root.
+
+When using lenses generated by fritz2, the property name is consistently used for this purpose.
+
+:::info
+If you write your own lenses, you should also follow the convention of always using the actual property name as 
+the `Lens.id`.
+:::
+
+On the UI side, mapping is used to create small, dedicated stores for an input field. On the validation side, 
+mapping is used to create dedicated inspectors that contain the same path to a data field.
+
+Using this path, you can generate validation messages that can then be uniquely assigned to a data field in the UI, 
+based on the path of the mapped store.
+
+The Headless components leverage this exact mechanism, providing an automatic assignment of validation messages to 
+a component and its store path, which is set in their `value` property.
+
+An example of this can be seen in the API of a [CheckboxGroup](/headless/checkboxgroup/#checkboxgroupvalidationmessages).
 
 ### Delegating Validation in Sealed Hierarchies
 
