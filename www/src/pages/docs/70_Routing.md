@@ -7,7 +7,7 @@ eleventyNavigation:
     key: routing
     parent: documentation
     title: Routing
-    order: 60
+    order: 70
 ---
 
 When writing a Single Page Application (SPA), you might need a way to render a certain view depending on url-parameters. 
