@@ -205,16 +205,76 @@ Person.validate(invalidPerson)
 // [Message(path=.address.street, severity=Error, text=Please provide a street)]
 ```
 
-### Using Meta Data
-
-TODO:
-- adapt validation to some "context"; often UI-State or some data from a different subtree of the model
-- validate only some sub model due to UI portion (data for `page1`)
-
 ### Validating Collections
 
-TODO:
-- show using the application of mapping Lenses inside `forEach`
+Another typical manifestation of complex object hierarchies are collections, such as lists or maps, that appear as 
+field types within objects.
+
+We can extend our previous example and imagine that a `Person` can have multiple addresses. 
+Thus, the field is updated to: `val addresses: List<Address>`.
+
+```kotlin
+@Lenses
+data class Person(
+    val name: String,
+    val age: Int,
+    val addresses: List<Address>, // multiple addresses are now possible
+) {
+    companion object {
+        val validate: Validation<Person, Unit, Message> = validation { inspector ->
+            // ... like before
+
+            // create `Inspector<List<Address>>`...
+            val addresses = inspector.map(Person.addresses())
+            // ... and validate all of its entries by index for identification purpose
+            addresses.data.forEachIndexed { index, _ ->
+                // don't forget to add all messages!
+                addAll(
+                    Address.validate(addresses.mapByIndex(index))
+                    //                         ^^^^^^^^^^^^^^^^^
+                    //                         apply mapping with distinct identifier
+                    //                         for `List` this is the index
+                )
+            }
+        }
+    }
+}
+```
+
+For collections, the `Inspector` provides mapping functions analogous to those for `Store`s, as described in the
+[Store Mapping](/docs/storemapping/#summary-of-store-mapping-factories) chapter. 
+In this case, we use the index, which is the canonical choice for a field of type `List<T>`. 
+We generate this index from the inspector's data for the addresses.
+
+Just like with the simple integration of an external validator, we must not forget to include its validation messages.
+
+The call — now featuring two invalid addresses and one valid address — looks like this:
+
+```kotlin
+val invalidPerson = Person(
+    "Chris",
+    48,
+    listOf(
+        Address("", "", "", ""),
+        Address("Valid-Street 22", "", "", ""),
+        Address("", "", "", ""),
+    )
+)
+Person.validate(invalidPerson)
+// [
+// Message(path=.addresses.0.street, severity=Error, text=Please provide a street), 
+// Message(path=.addresses.2.street, severity=Error, text=Please provide a street)
+// ]
+```
+
+The messages are easy to distinguish because their paths include the index. Based on the zero-based index, 
+the addresses at positions `0` and `2` are therefore invalid.
+
+### Using Meta Data
+
+  TODO:
+- adapt validation to some "context"; often UI-State or some data from a different subtree of the model
+- validate only some sub model due to UI portion (data for `page1`)
 
 ### About Inspectors and Paths
 
