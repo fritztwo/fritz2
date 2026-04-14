@@ -226,16 +226,15 @@ data class Person(
 
             // create `Inspector<List<Address>>`...
             val addresses = inspector.map(Person.addresses())
-            // ... and validate all of its entries by index for identification purpose
-            addresses.data.forEachIndexed { index, _ ->
-                // don't forget to add all messages!
-                addAll(
+            addAll(
+                // ... and validate all of its entries by index for identification purpose
+                addresses.data.indices.flatMap { index ->
                     Address.validate(addresses.mapByIndex(index))
                     //                         ^^^^^^^^^^^^^^^^^
                     //                         apply mapping with distinct identifier
                     //                         for `List` this is the index
-                )
-            }
+                }
+            )
         }
     }
 }
@@ -272,9 +271,103 @@ the addresses at positions `0` and `2` are therefore invalid.
 
 ### Using Meta Data
 
-  TODO:
-- adapt validation to some "context"; often UI-State or some data from a different subtree of the model
-- validate only some sub model due to UI portion (data for `page1`)
+Up to this point, we have only looked at validations in isolation.
+
+In reality, however, validations often require additional information, which we will henceforth refer to as *metadata*.
+
+Examples of such data include the progress within a complex multi-step form, where data for a global model is 
+entered incrementally. By keeping track of the user's current step, you can limit validation to the specific 
+part of the model that should actually be present at that stage.
+
+Furthermore, submodels often require information from other parts of the global model for their own validation. 
+Metadata can be used here as well to keep the component being validated as independent from the overall model 
+as possible.
+
+Another common example is the current date or time. This information should not be determined inside the validation 
+logic itself; instead, it should be passed in to simplify — or in some cases, even enable — testability.
+
+To address these requirements, the `validation` factory API provides a second parameter for arbitrary metadata 
+of type `T`:
+
+```kotlin
+fun <D, T, M> validation(validate: MutableList<M>.(Inspector<D>, T) -> Unit): Validation<D, T, M>
+//      ^                                                        ^
+//   type parameter defining the metadata type                2nd parameter of the invocation
+//                                                            in order to pass the actual metadata
+```
+
+Let's revisit our familiar `Person` example. Imagine a UI where you first enter only the person's basic details, 
+followed by their addresses in a second step. To control which parts of the validation should be executed, 
+you need to know the current progress within the UI. For this purpose, we will introduce a dedicated `Enum` type:
+
+```kotlin
+enum class Progress {
+    Core, Address
+}
+```
+
+We can now use this `Progress` state within our validation code to ensure that specific data is only validated when 
+required by the UI logic:
+
+```kotlin
+@Lenses
+data class Person(
+    val name: String,
+    val age: Int,
+    val addresses: List<Address>,
+) {
+    companion object {
+        val validate: Validation<Person, Progress, Message> = validation { inspector, progress ->
+            //                           ^^^^^^^^                                     ^^^^^^^^
+            //                    beware the changed metatdata type         use the additional parameter
+            val name = inspector.map(Person.name())
+            if (name.data.trim().isBlank()) {
+                add(Message(name.path, Severity.Error, "Please provide a name"))
+            }
+
+            // we omit this sub-validation until the user can provide such data via the UI
+            if (progress >= Progress.Address) {
+                val addresses = inspector.map(Person.addresses())
+                addAll(
+                    addresses.data.indices.flatMap { index ->
+                        Address.validate(addresses.mapByIndex(index))
+                    }
+                )
+            }
+        }
+    }
+}
+```
+
+We can now call the validation with different `Progress` states and will receive only those messages that are actually
+generated based on the `if` conditions in the code above:
+
+```kotlin
+val invalidPerson = Person(
+    "",
+    48,
+    listOf(
+        Address("", "", "", ""),
+    )
+)
+
+Person.validate(invalidPerson, Progress.Core)
+// [Message(path=.name, severity=Error, text=Please provide a name)]
+
+Person.validate(invalidPerson, Progress.Address)
+// [
+// Message(path=.name, severity=Error, text=Please provide a name), 
+// Message(path=.addresses.0.street, severity=Error, text=Please provide a street)
+// ]
+```
+
+:::info
+Metadata types can, of course, be as complex as needed!
+
+If you require more than just a simple `Enum`, you should create a **dedicated** `data class` that encapsulates 
+all the necessary data.
+:::
+
 
 ### About Inspectors and Paths
 
