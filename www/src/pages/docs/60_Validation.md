@@ -59,7 +59,12 @@ data class Person(
     companion object {
         // Define some validation object by the `validation` factory function:
         val validation: Validation<Person, Unit, Message> = validation<Person, Message> { inspector ->
+            // the `Inspector` will be explained in the upcoming sections
+            // Please accept this as a requirement for message identification.
             val name = inspector.map(Person.name())
+            //         ^^^^^^^^^     ^^^^^^^^^^^^^
+            //         works like a     we need to
+            //      read-only store!    pass a Lens
             if (name.data.trim().isBlank()) {
                 add(Message(name.path, Severity.Error, "Please provide a name"))
             }
@@ -86,6 +91,32 @@ Person.validation(invalidPerson)
 // [Message(path=.name, severity=Error, text=Please provide a name), 
 // Message(path=.name, severity=Warning, text=Is the person really older than 100 years‽)]
 ```
+
+### Inspectors on the Surface
+
+You might have wondered what exactly the `Inspector` is and why it is used for data access and processing instead of 
+working directly with an object's fields.
+
+Think of an `Inspector` as a read-only `Store`. In essence, it is the counterpart to the mutable stores in the UI that 
+hold the application's state.
+
+When performing validation, you are generally working with the same types that are managed in stores within the UI.
+
+By wrapping these objects in an `Inspector` and consistently using the **same** `Lense`s as with the stores, 
+messages are generated that refer to exactly the same part of the model (usually a specific property). 
+This relationship allows the UI to later display messages precisely at the fields they were intended for.
+
+This property is reflected in the `Inspector.path` field.
+
+For a high-level overview, it is sufficient to accept this and know that you access the data via `Inspector.data`. 
+By using various mapping functions, you can decompose the model down to its leaf nodes, passing the corresponding 
+lenses as parameters.
+
+If you follow these conventions, [Headless UI components](/headless), for example, will automatically provide all 
+validation messages associated with a mapped store in a `value` field without any additional effort.
+
+More in-depth information can be found in the section 
+[About Inspectors and Paths](/docs/validation/about-inspectors-and-paths).
 
 ## Essentials
 
