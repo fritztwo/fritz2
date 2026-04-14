@@ -68,7 +68,7 @@ data class Person(
             if (age.data < 1) {
                 add(Message(age.path, Severity.Error, "Please correct the age"))
             } else if (age.data > 100) {
-                add(Message(age.path, Severity.Warning, "Is the person really older then 100 years‽"))
+                add(Message(age.path, Severity.Warning, "Is the person really older than 100 years‽"))
             }
         }
     }
@@ -83,8 +83,8 @@ Now you can use the `Validation` object in your `commonMain`, `jsMain` or `jvmMa
 val invalidPerson = Person("", 101)
 Person.validation(invalidPerson)
 // gives a List of Messages:
-// [Message(.name, Please provide a name, Severity.Error),
-// Message(.age, Is the person really older then 100 years‽, Severity.Warning)]
+// [Message(path=.name, severity=Error, text=Please provide a name), 
+// Message(path=.name, severity=Warning, text=Is the person really older than 100 years‽)]
 ```
 
 ## Essentials
