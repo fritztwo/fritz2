@@ -17,7 +17,7 @@ class StoreTests {
 
     @Test
     fun testStoreHandleAndOfferHandler() = runTest {
-        
+
         val id1 = Id.next()
         val id2 = Id.next()
         val buttonId = Id.next()
@@ -68,7 +68,7 @@ class StoreTests {
 
     @Test
     fun testStoreHandleAndOfferHandleAndOfferHandler() = runTest {
-        
+
         val id1 = Id.next()
         val id2 = Id.next()
         val id3 = Id.next()
@@ -137,7 +137,7 @@ class StoreTests {
 
     @Test
     fun testErrorHandling() = runTest {
-        
+
         val valueId = Id.next()
         fun getValue() = document.getElementById(valueId)?.textContent
 
@@ -198,7 +198,11 @@ class StoreTests {
 
         flowOf(1) handledBy store.simpleTestHandlerWithActionThrowingException
         delay(150)
-        assertEquals(store.exceptionSimpleHandlerValue, errorHandlerResult, "exception not caught on simple handler with action")
+        assertEquals(
+            store.exceptionSimpleHandlerValue,
+            errorHandlerResult,
+            "exception not caught on simple handler with action"
+        )
         assertEquals(updates.value, getValue(), "wrong value rendered after simple handler with action")
         checkUpdate("store not updating after simple handler with action")
 
@@ -210,7 +214,11 @@ class StoreTests {
 
         flowOf(2) handledBy store.emittingTestHandlerWithActionThrowingException
         delay(150)
-        assertEquals(store.exceptionEmittingHandlerValue, errorHandlerResult, "exception not caught on emitting handler with action")
+        assertEquals(
+            store.exceptionEmittingHandlerValue,
+            errorHandlerResult,
+            "exception not caught on emitting handler with action"
+        )
         assertEquals(updates.value, getValue(), "wrong value rendered after emitting handler with action")
         checkUpdate("store not updating after emitting handler with action")
 
@@ -234,5 +242,14 @@ class StoreTests {
             resultValue,
             "Data of the derived Store must equal the expected value."
         )
+    }
+
+    @Test
+    fun rootStoresPathWorksCorrectly() {
+        val withoutIdStore = storeOf<String?>(null, job = Job(), id = "")
+        val withInitialPathIdStore = storeOf<String?>(null, job = Job(), id = "Id.one.two")
+
+        assertEquals("", withoutIdStore.path)
+        assertEquals(".one.two", withInitialPathIdStore.path)
     }
 }

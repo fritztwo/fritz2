@@ -6,6 +6,13 @@ package dev.fritz2.core
 fun <D> inspectorOf(data: D): Inspector<D> = RootInspector(data)
 
 /**
+ *  gives you a new [Inspector] as starting point.
+ *
+ *  @param path optional path. Beware that all parts before the first dot are omitted.
+ */
+fun <D> inspectorOf(data: D, path: String): Inspector<D> = RootInspector(data, path)
+
+/**
  * represents the data and corresponding id of certain value
  * in a deep nested model structure.
  *
@@ -25,17 +32,19 @@ interface Inspector<D> {
     fun <X> map(lens: Lens<D, X>): Inspector<X> = SubInspector(this, lens)
 }
 
-
 /**
  * [RootInspector] is the starting point for getting your [data] and corresponding [path]s from your
  * deep nested model structure. Get this by calling the factory method [inspectorOf].
  *
  * [Inspector] is useful in validation process to know which model attribute is not valid.
+ *
+ * @property path accepts an initial path. Beware that all parts before the first dot are omitted.
  */
 class RootInspector<T>(
-    override val data: T
+    override val data: T,
+    path: String = ""
 ) : Inspector<T> {
-    override val path: String = ""
+    override val path: String = path.substringAfter(".", "").let { if (it.isNotBlank()) ".$it" else "" }
 }
 
 /**
