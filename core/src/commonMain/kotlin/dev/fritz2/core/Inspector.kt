@@ -6,6 +6,13 @@ package dev.fritz2.core
 fun <D> inspectorOf(data: D): Inspector<D> = RootInspector(data)
 
 /**
+ *  gives you a new [Inspector] as starting point.
+ *
+ *  @param path optional path. Beware that all parts before the first dot are omitted.
+ */
+fun <D> inspectorOf(data: D, path: String): Inspector<D> = RootInspector(data, path)
+
+/**
  * represents the data and corresponding id of certain value
  * in a deep nested model structure.
  *
@@ -25,17 +32,20 @@ interface Inspector<D> {
     fun <X> map(lens: Lens<D, X>): Inspector<X> = SubInspector(this, lens)
 }
 
-
 /**
  * [RootInspector] is the starting point for getting your [data] and corresponding [path]s from your
  * deep nested model structure. Get this by calling the factory method [inspectorOf].
  *
  * [Inspector] is useful in validation process to know which model attribute is not valid.
+ *
+ * @property path accepts an initial path. Beware that all parts before the first dot are omitted as the path semantics
+ * in fritz2 starts with the part after the "id", which ends at the first dot.
  */
 class RootInspector<T>(
-    override val data: T
+    override val data: T,
+    path: String = ""
 ) : Inspector<T> {
-    override val path: String = ""
+    override val path: String = path.substringAfter(".", "").let { if (it.isNotBlank()) ".$it" else "" }
 }
 
 /**
@@ -74,7 +84,7 @@ fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
  * Creates a new [Inspector] from a _non-nullable_ parent inspector that either contains the original value or `null` if
  * its value matches the given [placeholder].
  *
- * When updating the value of the resulting [Store] to `null`, the [placeholder] is used instead.
+ * When updating the value of the resulting `Store` to `null`, the [placeholder] is used instead.
  * When the resulting [Inspector]'s value would be the [placeholder], `null` will be used instead.
  *
  * @param placeholder value to be mapped to `null`

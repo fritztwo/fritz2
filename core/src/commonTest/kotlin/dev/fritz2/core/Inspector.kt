@@ -247,4 +247,28 @@ class InspectorTests {
             i++
         }
     }
+
+    @Test
+    fun testInspectorOfAcceptsInitialPath() {
+        val result = inspectorOf(42, "Id.one.two")
+        assertEquals(".one.two", result.path)
+    }
+
+    @Test
+    fun testInspectorOfAcceptsBlankInitialPath() {
+        val result = inspectorOf(42, "")
+        assertEquals("", result.path)
+    }
+
+    @Test
+    fun testRootInspectorAcceptsInitialPath() {
+        val result = RootInspector(42, "Id.one.two")
+        assertEquals(".one.two", result.path)
+    }
+
+    @Test
+    fun testRootInspectorAcceptsBlankInitialPath() {
+        val result = inspectorOf(42, "")
+        assertEquals("", result.path)
+    }
 }

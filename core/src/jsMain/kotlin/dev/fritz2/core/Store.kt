@@ -142,7 +142,7 @@ open class RootStore<D>(
     job: Job,
     override val id: String = Id.next()
 ) : Store<D> {
-    override val path: String = ""
+    override val path: String by lazy { id.substringAfter(".", "").let { if (it.isNotBlank()) ".$it" else "" } }
 
     private val state: MutableStateFlow<D> = MutableStateFlow(initialData)
     private val queue = Channel<Update<D>>(Channel.UNLIMITED)
