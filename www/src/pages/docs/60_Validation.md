@@ -58,7 +58,7 @@ data class Person(
 ) {
     companion object {
         // Define some validation object by the `validation` factory function:
-        val validation: Validation<Person, Unit, Message> = validation<Person, Message> { inspector ->
+        val validate: Validation<Person, Unit, Message> = validation<Person, Message> { inspector ->
             // the `Inspector` will be explained in the upcoming sections
             // Please accept this as a requirement for message identification.
             val name = inspector.map(Person.name())
@@ -86,7 +86,7 @@ Now you can use the `Validation` object in your `commonMain`, `jsMain` or `jvmMa
 
 ```kotlin
 val invalidPerson = Person("", 101)
-Person.validation(invalidPerson)
+Person.validate(invalidPerson)
 // gives a List of Messages:
 // [
 // Message(path=.name, severity=Error, text=Please provide a name), 
@@ -133,6 +133,9 @@ You can access these validation messages via `store.messages`: a `Flow<List<M>>`
 type. Handle this `Flow` like any other `Flow` of a `List` — for example, render it to HTML:
 
 ```kotlin
+// create a `ValidatingStore` by using an overloaded factory located in `dev.fritz2.validation`-package
+val store = storeOf(Person("Chris", 48), Person::validate)
+
 // create some messages with shady data
 store.update(Person("", 101))
 
@@ -356,11 +359,7 @@ data class Person(
             // we omit this sub-validation until the user can provide such data via the UI
             if (progress >= Progress.Address) {
                 val addresses = inspector.map(Person.addresses())
-                addAll(
-                    addresses.data.indices.flatMap { index ->
-                        Address.validate(addresses.mapByIndex(index))
-                    }
-                )
+                addresses.inspectEach { address -> addAll(Address.validate(address)) }
             }
         }
     }
@@ -529,26 +528,55 @@ sealed interface Wish {
             // The rest of the validation depends on the concrete type of `Wish`.
             // Just like with the store mapping, we need to manually check its type before using the respective
             // up-casting lens!
-            when (inspector.data) {
-                is Computer -> {
-                    val ram = inspector.map(Wish.computer().ramInKb())
-//                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
-//                                          Being sure the actual type is `Computer`, we may now use the up-casting
-//                                          lens. We may also chain it in order to validate a `Computer`-specific
-//                                          property like `ramInKb`.
-                    if (ram.data < 4096) {
-                        add(Message(isError = false, inspector.path,"Warning Low amount of RAM"))
-                    }
+            addAll(
+                when (inspector.data) {
+                    is Computer -> Computer.validate(inspector.map(Wish.computer()))
+//                                 ^^^^^^^^^^^^^^^^^               ^^^^^^^^^^^^^^^
+//                      We delegate validation to the actual type         |
+//                                                                        |
+//                                 Being sure the actual type is `Computer`, we may now use the up-casting
+//                                 lens to create the fitting typed `Inspector<Computer>`-
+                
+                    is LightSaber -> LightSaber.validate(inspector.map(Wish.lightSaber()))
+//                                   ^^^^^^^^^^^^^^^^^^^               ^^^^^^^^^^^^^^^^^ 
+//                      We delegate validation to the actual type         |
+//                                                                        |
+//                                 Just like with `Computer`, we use the respective up-casting lens for
+//                                 `LightSaber` to validate lightsaber properties.
                 }
-                is LightSaber -> {
-                    val color = inspector.map(Wish.lightSaber().color())
-//                                            ^^^^^^^^^^^^^^^^^^^^^^^^^
-//                                            Just like with `Computer`, we use the respective up-casting lens for
-//                                            `LightSaber` to validate lightsaber properties.
-                    if (color.data == Color.Red) {
-                        add(Message(isError = true, inspector.path, "Light saber cannot be red!"))
-                    }
-                }
+            )
+        }
+    }
+}
+
+@Lenses
+data class Computer(
+    override val label: String,
+    val ramInKb: Int
+) : Wish {
+    override val typeName: String = "Computer"
+    companion object {
+        // type specific validation as usual inside the companion object
+        val validate: Validation<Computer, Unit, Message> = validation { inspector ->
+            val ram = inspector.map(Computer.ramInKb())
+            if (ram.data < 4096) {
+                add(Message(isError = false, inspector.path,"Warning Low amount of RAM"))
+            }
+        }
+    }
+}
+
+@Lenses
+data class LightSaber(
+    override val label: String,
+    val color: Color
+) : Wish {
+    override val typeName: String = "Lightsaber"
+    companion object {
+        val validate: Validation<LightSaber, Unit, Message> = validation { inspector ->
+            val color = inspector.map(LightSaber.color())
+            if (color.data == Color.Petrol) {
+                add(Message(isError = true, inspector.path, "Light saber sadly cannot be petrol!"))
             }
         }
     }
