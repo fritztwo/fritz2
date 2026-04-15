@@ -38,7 +38,8 @@ interface Inspector<D> {
  *
  * [Inspector] is useful in validation process to know which model attribute is not valid.
  *
- * @property path accepts an initial path. Beware that all parts before the first dot are omitted.
+ * @property path accepts an initial path. Beware that all parts before the first dot are omitted as the path semantics
+ * in fritz2 starts with the part after the "id", which ends at the first dot.
  */
 class RootInspector<T>(
     override val data: T,
@@ -83,7 +84,7 @@ fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
  * Creates a new [Inspector] from a _non-nullable_ parent inspector that either contains the original value or `null` if
  * its value matches the given [placeholder].
  *
- * When updating the value of the resulting [Store] to `null`, the [placeholder] is used instead.
+ * When updating the value of the resulting `Store` to `null`, the [placeholder] is used instead.
  * When the resulting [Inspector]'s value would be the [placeholder], `null` will be used instead.
  *
  * @param placeholder value to be mapped to `null`
