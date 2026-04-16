@@ -81,7 +81,7 @@ fun RenderContext.collectionDemo() {
                 ) {
                     className(selected.map { sel ->
                         if (sel == index) "bg-primary-800 text-white shadow-md"
-                        else "text-primary-100 hover:bg-primary-900/[0.12]"
+                        else "text-primary-100 hover:bg-primary-900/12"
                     })
                     +category
                 }
@@ -262,7 +262,7 @@ fun RenderContext.gridListDemo(amount: Int) {
                                 }
                                 p("mt-1 text-xs truncate opacity-80") { +item.birthday }
                             }
-                            img("w-16 h-16 bg-gray-300 rounded-md flex-shrink-0") {
+                            img("w-16 h-16 bg-gray-300 rounded-md shrink-0") {
                                 src(item.portraitUrl)
                                 alt("")
                             }

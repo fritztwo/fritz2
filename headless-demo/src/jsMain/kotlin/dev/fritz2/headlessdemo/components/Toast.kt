@@ -90,7 +90,7 @@ private fun showToast(container: String, initialize: Tag<HTMLLIElement>.() -> Un
     toast(
         container,
         duration = 6000L,
-        """flex flex-row flex-shrink-0 gap-2 justify-center
+        """flex flex-row shrink-0 gap-2 justify-center
             | w-max px-4 py-2.5
             | rounded shadow-sm
             | border border-transparent

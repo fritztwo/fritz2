@@ -14,7 +14,7 @@ fun RenderContext.switchDemo() {
 
     div("max-w-sm") {
         switch(
-            """relative inline-flex flex-shrink-0 h-6 w-11
+            """relative inline-flex shrink-0 h-6 w-11
                 | cursor-pointer rounded-full
                 | border-2 border-transparent ring-1 ring-primary-400
                 | transition-colors ease-in-out duration-200 
@@ -36,7 +36,7 @@ fun RenderContext.switchDemo() {
 
         switchWithLabel("flex items-center justify-between mt-4 p-4 bg-primary-200 rounded-lg") {
             value(switchWithLabelState)
-            span("flex-grow flex flex-col") {
+            span("grow flex flex-col") {
                 switchLabel("block mb-1 text-sm font-medium text-primary-800", tag = RenderContext::span) {
                     +"Use fritz2 with tailwind?"
                 }
@@ -45,7 +45,7 @@ fun RenderContext.switchDemo() {
                 }
             }
             switchToggle(
-                """relative inline-flex flex-shrink-0 h-6 w-11
+                """relative inline-flex shrink-0 h-6 w-11
                 | cursor-pointer rounded-full
                 | border-2 border-transparent ring-1 ring-primary-400  
                 | transition-colors ease-in-out duration-200 

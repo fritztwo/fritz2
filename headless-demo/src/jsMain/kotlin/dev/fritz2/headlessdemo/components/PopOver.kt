@@ -78,7 +78,7 @@ fun RenderContext.popOverDemo() {
                         attr("key", "{$item.name}")
                         attr("tabindex", "0")
                         div(
-                            """flex items-center justify-center flex-shrink-0 w-10 h-10 sm:h-12 sm:w-12 p-1 
+                            """flex items-center justify-center shrink-0 w-10 h-10 sm:h-12 sm:w-12 p-1 
                             | rounded-lg 
                             | bg-primary-100""".trimMargin()
                         ) {
@@ -104,7 +104,7 @@ fun RenderContext.popOverDemo() {
                 }
                 popOver(id = "innerPopOver") {
                     popOverButton(
-                        """flex items-center justify-center flex-shrink-0 w-6 h-6 sm:h-8 sm:w-8 p-1 
+                        """flex items-center justify-center shrink-0 w-6 h-6 sm:h-8 sm:w-8 p-1 
                         | rounded-lg 
                         | bg-primary-100""".trimMargin()
                     ) {

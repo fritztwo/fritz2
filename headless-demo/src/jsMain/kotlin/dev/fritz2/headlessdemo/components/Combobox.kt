@@ -47,7 +47,7 @@ private fun RenderContext.renderCombobox(
         ) {
             comboboxInput(
                 joinClasses(
-                    "w-full block flex-grow bg-transparent border-0 outline-0 placeholder-gray-700",
+                    "w-full block grow bg-transparent border-0 outline-0 placeholder-gray-700",
                     "vui-label-4 p-0 focus:ring-transparent focus:shadow-none disabled:text-gray-400",
                     "text-ellipsis",
                 ),

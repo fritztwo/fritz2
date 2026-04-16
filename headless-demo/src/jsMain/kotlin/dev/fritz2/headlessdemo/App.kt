@@ -119,7 +119,7 @@ fun RenderContext.overview() {
                     | opacity-80 hover:opacity-100 transition ease-in-out duration-150""".trimMargin()
                 ) {
                     href("#")
-                    icon("flex-shrink-0 h-6 w-6 text-primary-800", content = HeroIcons.support)
+                    icon("shrink-0 h-6 w-6 text-primary-800", content = HeroIcons.support)
                     div("ml-4") {
                         p("text-base font-medium text-gray-900") { +value.title }
                         p("mt-1 text-sm text-gray-500") { +value.description }

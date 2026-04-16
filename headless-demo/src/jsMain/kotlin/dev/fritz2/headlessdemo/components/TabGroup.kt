@@ -33,7 +33,7 @@ fun RenderContext.tabsDemo() {
                 ) {
                     className(selected.map { sel ->
                         if (sel == index) "bg-primary-800 text-white shadow-md"
-                        else "text-primary-100 hover:bg-primary-900/[0.12]"
+                        else "text-primary-100 hover:bg-primary-900/12"
                     })
                     +category
                 }
