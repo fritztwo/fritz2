@@ -11,8 +11,15 @@ kotlin {
     jvm() // needed for kspCommonMainMetadata
 
     js(IR) {
-        browser()
-    }.binaries.executable()
+        browser {
+            commonWebpackConfig {
+                cssSupport {
+                    enabled = true // Aktiviert die Verarbeitung von CSS-Dateien
+                }
+            }
+        }
+        binaries.executable()
+    }
 
     sourceSets {
         all {
@@ -28,17 +35,17 @@ kotlin {
         }
         jsMain {
             dependencies {
-                // tailwind
-                implementation(npm(libs.tailwindcss.core))
-                implementation(npm(libs.tailwindcss.forms))
+                // Das Core-Paket und das PostCSS-Plugin müssen immer die exakt gleiche Version haben
+                implementation(npm("tailwindcss", "4.2.0"))
+                implementation(npm("@tailwindcss/postcss", "4.2.0"))
 
-                // webpack
-                implementation(npm(libs.postcss.core))
-                implementation(npm(libs.postcss.loader))
-                implementation(npm(libs.autoprefixer))
-                implementation(npm(libs.css.loader))
-                implementation(npm(libs.style.loader))
-                implementation(npm(libs.cssnano))
+                // PostCSS selbst (Version 8.4.x ist der stabile Standard für Tailwind 4)
+                implementation(npm("postcss", "8.4.47"))
+
+                // Der Loader für Webpack. Version 7.3.3 ist sehr stabil für Kotlin/JS.
+                // Höhere Versionen (z.B. 8.x oder 9.x) könnten neuere Node-Versionen
+                // voraussetzen, die dein Kotlin-Plugin eventuell noch nicht mitbringt.
+                implementation(npm("postcss-loader", "7.3.3"))
             }
         }
     }
@@ -49,7 +56,7 @@ dependencies {
 }
 
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
+    if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
