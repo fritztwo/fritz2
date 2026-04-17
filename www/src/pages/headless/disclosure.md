@@ -120,7 +120,7 @@ val toggle = storeOf(true, job = Job()) // show Panel at start
 disclosure {
     
     // establish two-way data binding
-    openClose(toggle)
+    openState(toggle)
     
     disclosureButton {
         +"When is being headless a good thing?"
