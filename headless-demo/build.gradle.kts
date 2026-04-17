@@ -14,7 +14,7 @@ kotlin {
         browser {
             commonWebpackConfig {
                 cssSupport {
-                    enabled = true // Aktiviert die Verarbeitung von CSS-Dateien
+                    enabled = true
                 }
             }
         }
@@ -35,17 +35,10 @@ kotlin {
         }
         jsMain {
             dependencies {
-                // Das Core-Paket und das PostCSS-Plugin müssen immer die exakt gleiche Version haben
-                implementation(npm("tailwindcss", "4.2.0"))
-                implementation(npm("@tailwindcss/postcss", "4.2.0"))
-
-                // PostCSS selbst (Version 8.4.x ist der stabile Standard für Tailwind 4)
-                implementation(npm("postcss", "8.4.47"))
-
-                // Der Loader für Webpack. Version 7.3.3 ist sehr stabil für Kotlin/JS.
-                // Höhere Versionen (z.B. 8.x oder 9.x) könnten neuere Node-Versionen
-                // voraussetzen, die dein Kotlin-Plugin eventuell noch nicht mitbringt.
-                implementation(npm("postcss-loader", "7.3.3"))
+                implementation(npm(libs.tailwindcss.core))
+                implementation(npm(libs.tailwindcss.postcss))
+                implementation(npm(libs.postcss.core))
+                implementation(npm(libs.postcss.loader))
             }
         }
     }
