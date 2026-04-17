@@ -35,7 +35,7 @@ button {
 }
 
 modal {
-    openClose(toggle)
+    openState(toggle)
     modalPanel {
         modalOverlay {
             // add styling and maybe some pleasant transition
@@ -79,7 +79,7 @@ the `setInitialFocus` function can be called inside a `Tag`.
 
 ```kotlin
 modal {
-    openClose(toggle)
+    openState(toggle)
     modalPanel {
         p { +"I am some modal dialog! Press Cancel to exit."}
         // first focusable element
@@ -106,7 +106,7 @@ the factory functions `modalTitle` and `modalDescription`.
 
 ```kotlin
 modal {
-    openClose(toggle)
+    openState(toggle)
     modalPanel {         
         // add title and description
         modalTitle { +"Example Dialog" }
@@ -129,7 +129,7 @@ Showing and hiding the modal dialog can be easily animated with the help of `tra
 
 ```kotlin
 modal {
-    openClose(toggle)
+    openState(toggle)
     modalPanel {
         modalOverlay {
             // some nice fade in/out effect for the overlay

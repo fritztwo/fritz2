@@ -482,7 +482,7 @@ listbox<String> {
     //...
 
     listboxItems {
-        openClose(data = flowOf(true))
+        openState(data = flowOf(true))
 
         characters.forEach { entry ->
             listboxItem(entry) {
