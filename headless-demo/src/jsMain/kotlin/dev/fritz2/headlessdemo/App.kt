@@ -138,7 +138,10 @@ fun main() {
     val router = routerOf("")
 
     render {
-        main(scope = { set(SHOW_COMPONENT_STRUCTURE, true) }) {
+        main(
+            "h-screen bg-linear-to-b from-primary-400 to-primary-200",
+            scope = { set(SHOW_COMPONENT_STRUCTURE, true) }
+        ) {
             router.data.render { route ->
                 div("p-4") {
                     (pages[route]?.content ?: RenderContext::overview)()
@@ -146,6 +149,7 @@ fun main() {
             }
 
             portalRoot()
+            div() { }
         }
     }
 }

@@ -1,14 +1,10 @@
 @import "tailwindcss";
 
-@source "../../../src/jsMain/kotlin/**/*.kt";
 @source "../../../build/js/packages/fritz2-headless-demo/kotlin/*.js";
 
 @theme {
     /* Schriften */
     --font-sans: "Inter var", ui-sans-serif, system-ui, sans-serif;
-
-    /* Hintergrundbilder */
-    --background-image-radial-at-b: radial-gradient(ellipse at bottom, var(--tw-gradient-stops));
 
     /* Primary Palette */
     --color-primary-50: #FBFDFD;
