@@ -116,7 +116,7 @@ fun RenderContext.overview() {
                 a(
                     joinClasses(
                         "-m-3 p-3 pr-5 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white",
-                        "ring-offset-2 ring-offset-primary-600 hover:outline-none shadow-lg rounded-lg bg-white",
+                        "ring-offset-2 ring-offset-primary-600 hover:outline-hidden shadow-lg rounded-lg bg-white",
                         "opacity-80 hover:opacity-100 transition ease-in-out duration-150",
                     )
                 ) {

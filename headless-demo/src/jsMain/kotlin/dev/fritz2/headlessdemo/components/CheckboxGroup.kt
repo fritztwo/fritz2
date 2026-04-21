@@ -36,7 +36,7 @@ fun RenderContext.checkboxGroupDemo() {
                             joinClasses(
                                 "grid grid-rows-3 grid-cols-[auto_1fr] gap-1 p-4",
                                 "text-base font-sans cursor-pointer rounded-md",
-                                "focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600",
+                                "focus:outline-hidden focus-visible:ring-4 focus-visible:ring-primary-600",
                             )
                         ) {
                             div("row-span-3 pr-2") {
@@ -61,7 +61,7 @@ fun RenderContext.checkboxGroupDemo() {
         }
 
         div(
-            "bg-primary-100 mt-4 p-2.5 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm",
+            "bg-primary-100 mt-4 p-2.5 rounded-sm ring-2 ring-primary-500 text-sm text-primary-800 shadow-xs",
             id = "result"
         ) {
             span("font-medium") { +"Selected: " }

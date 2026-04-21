@@ -24,10 +24,10 @@ fun RenderContext.filterInput(id: String, filterStore: Store<String>) {
         inputTextfield(
             joinClasses(
                 "w-full max-w-sm py-2.5 pl-10 pr-2.5",
-                "bg-white rounded-sm border border-primary-600 hover:border-primary-800",
+                "bg-white rounded-xs border border-primary-600 hover:border-primary-800",
                 "font-sans text-sm text-primary-800 placeholder:text-slate-400",
                 "disabled:opacity-50",
-                "focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800",
+                "focus:outline-hidden focus:ring-4 focus:ring-primary-600 focus:border-primary-800",
             )
         ) {
             placeholder("Filter...")
@@ -81,8 +81,8 @@ fun RenderContext.collectionDemo() {
                 tab(
                     joinClasses(
                         "w-full py-2.5 leading-5",
-                        "text-sm font-medium rounded",
-                        "focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600",
+                        "text-sm font-medium rounded-sm",
+                        "focus:outline-hidden focus-visible:ring-4 focus-visible:ring-primary-600",
                     )
                 ) {
                     className(selected.map { sel ->
@@ -95,7 +95,7 @@ fun RenderContext.collectionDemo() {
         }
         tabPanels("mt-2") {
             examples.forEach { (_, example, amount) ->
-                panel("focus:outline-none") {
+                panel("focus:outline-hidden") {
                     example(this, amount)
                 }
             }
@@ -114,7 +114,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
     filterInput("dataTable-filter", filterStore)
 
     dataCollection<Person>(
-        "relative h-96 border border-primary-400 sm:rounded overflow-auto focus:outline-none",
+        "relative h-96 border border-primary-400 sm:rounded-sm overflow-auto focus:outline-hidden",
         id = "dataTable"
     ) {
         data(storedPersons.data, Person::id)
@@ -132,7 +132,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
                             compareBy(Person::fullName),
                             compareByDescending(Person::fullName),
                             initialize = sortIcons,
-                            classes = "focus:outline-none",
+                            classes = "focus:outline-hidden",
                             id = "dataTable-sort-name"
                         )
                     }
@@ -145,7 +145,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
             val padding = "px-3 py-2.5 whitespace-nowrap"
 
             dataCollectionItems(
-                "text-sm font-base divide-y-2 divide-primary-100 focus:outline-none",
+                "text-sm font-base divide-y-2 divide-primary-100 focus:outline-hidden",
                 tag = RenderContext::tbody
             ) {
                 scrollIntoView(vertical = ScrollPosition.center)
@@ -178,7 +178,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
     }
 
     div(
-        "mt-4 p-2.5 bg-primary-100 rounded shadow-sm ring-2 ring-primary-500",
+        "mt-4 p-2.5 bg-primary-100 rounded-sm shadow-xs ring-2 ring-primary-500",
         id = "result"
     ) {
         attr("data-selected-count", selectionStore.data.map { it.count() })
@@ -215,9 +215,9 @@ fun RenderContext.gridListDemo(amount: Int) {
                 compareBy(Person::fullName),
                 compareByDescending(Person::fullName),
                 joinClasses(
-                    "ml-3 flex justify-center items-center rounded border border-primary-700",
+                    "ml-3 flex justify-center items-center rounded-sm border border-primary-700",
                     "cursor-default sm:text-sm",
-                    "focus:outline-none focus:ring-2 focus:ring-primary-600 ",
+                    "focus:outline-hidden focus:ring-2 focus:ring-primary-600 ",
                 ),
                 id = "gridList-sort-name"
             ) {
@@ -238,7 +238,7 @@ fun RenderContext.gridListDemo(amount: Int) {
 
         div("h-96 pt-4 overflow-x-auto relative") {
             dataCollectionItems(
-                "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 overflow-y-auto p-2 focus:outline-none",
+                "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 overflow-y-auto p-2 focus:outline-hidden",
                 tag = RenderContext::ul
             ) {
                 scrollIntoView()
@@ -311,7 +311,7 @@ fun RenderContext.gridListDemo(amount: Int) {
     }
 
     div(
-        "mt-4 p-2.5 bg-primary-100 rounded shadow-sm ring-2 ring-primary-500",
+        "mt-4 p-2.5 bg-primary-100 rounded-sm shadow-xs ring-2 ring-primary-500",
         id = "result"
     ) {
         attr("data-selected-count", selectionStore.data.map { it.count() })

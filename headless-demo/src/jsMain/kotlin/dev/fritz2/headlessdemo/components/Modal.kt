@@ -10,11 +10,11 @@ fun RenderContext.modalDemo() {
 
     button(
         """inline-flex justify-center w-32 px-4 py-2 sm:col-start-2
-        | rounded shadow-sm bg-primary-800
+        | rounded shadow-xs bg-primary-800
         | border border-transparent
         | text-sm text-white
         | hover:bg-primary-900
-        | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+        | focus:outline-hidden focus:ring-4 focus:ring-primary-600""".trimMargin()
     ) {
         +"Open"
         clicks.map { !toggle.current } handledBy toggle.update
@@ -26,11 +26,11 @@ fun RenderContext.modalDemo() {
                 modalOverlay("fixed inset-0 bg-primary-300/75 transition-opacity") {
                     transition(
                         "ease-out duration-300",
-                        "bg-primary-300/100",
+                        "bg-primary-300",
                         "bg-primary-300/0",
                         "ease-in duration-300",
                         "bg-primary-300/0",
-                        "bg-primary-300/100"
+                        "bg-primary-300"
                     )
 
                     /* <!-- This element is to trick the browser into centering the modal contents. --> */
@@ -50,9 +50,9 @@ fun RenderContext.modalDemo() {
                         transition(
                             "ease-out duration-300",
                             "bg-white/0 translate-y-4 sm:translate-y-0 sm:scale-95",
-                            "bg-white/100 translate-y-0 sm:scale-100",
+                            "bg-white translate-y-0 sm:scale-100",
                             "ease-in duration-300",
-                            "bg-white/100 translate-y-0 sm:scale-100",
+                            "bg-white translate-y-0 sm:scale-100",
                             "bg-white/0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         )
                         div("mt-3 text-center sm:mt-0 sm:text-left") {
@@ -72,11 +72,11 @@ fun RenderContext.modalDemo() {
                             button(
                                 joinClasses(
                                     "inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2",
-                                    "rounded shadow-sm",
+                                    "rounded-sm shadow-xs",
                                     "border border-transparent",
                                     "text-sm text-primary-800",
                                     "hover:bg-primary-400",
-                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
                                 ),
                                 id = "button-stay"
                             ) {
@@ -86,11 +86,11 @@ fun RenderContext.modalDemo() {
                             button(
                                 joinClasses(
                                     "inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2",
-                                    "rounded shadow-sm",
+                                    "rounded-sm shadow-xs",
                                     "border border-transparent",
                                     "text-sm text-primary-800",
                                     "hover:bg-primary-400",
-                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
                                 ),
                                 id = "button-cancel"
                             ) {
@@ -101,11 +101,11 @@ fun RenderContext.modalDemo() {
                             button(
                                 joinClasses(
                                     "inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2",
-                                    "rounded shadow-sm bg-primary-800",
+                                    "rounded-sm shadow-xs bg-primary-800",
                                     "border border-transparent",
                                     "text-sm text-white",
                                     "hover:bg-primary-900",
-                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
                                 ),
                                 id = "button-close"
                             ) {

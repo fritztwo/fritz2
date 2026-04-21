@@ -34,11 +34,11 @@ fun RenderContext.menuDemo() {
                     menuButton(
                         joinClasses(
                             "inline-flex justify-center items-center sm:col-start-2 px-4 py-2.5",
-                            "rounded shadow-sm",
+                            "rounded-sm shadow-xs",
                             "border border-transparent",
                             "text-sm font-sans text-white",
                             "hover:bg-primary-900",
-                            "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                            "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
                         )
                     ) {
                         className(opened.map { if (it) "bg-primary-900" else "bg-primary-800" })
@@ -50,9 +50,9 @@ fun RenderContext.menuDemo() {
                 menuItems(
                     joinClasses(
                         "w-56 max-h-56 overflow-y-auto origin-top-left z-30",
-                        "bg-white rounded shadow-md divide-y divide-gray-100",
+                        "bg-white rounded-sm shadow-md divide-y divide-gray-100",
                         "border-white border-2",
-                        "focus:outline-none",
+                        "focus:outline-hidden",
                     )
                 ) {
                     placement = PlacementValues.bottomStart

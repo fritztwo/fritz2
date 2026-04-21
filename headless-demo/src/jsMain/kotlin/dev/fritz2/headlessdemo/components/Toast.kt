@@ -25,7 +25,7 @@ fun RenderContext.toastDemo() {
         )
     }
 
-    div("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-6 bg-white rounded p-4") {
+    div("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-6 bg-white rounded-sm p-4") {
         p {
             +"Press a button below to create a new toast:"
         }
@@ -33,11 +33,11 @@ fun RenderContext.toastDemo() {
             button(
                 joinClasses(
                     "flex justify-center items-center px-4 py-2.5",
-                    "rounded shadow-sm",
+                    "rounded-sm shadow-xs",
                     "border border-transparent",
                     "text-sm font-sans text-white",
                     "bg-primary-400 hover:bg-primary-900",
-                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
                 ),
                 id = "btn-toast-default"
             ) {
@@ -54,11 +54,11 @@ fun RenderContext.toastDemo() {
             button(
                 joinClasses(
                     "flex justify-center items-center px-4 py-2.5",
-                    "rounded shadow-sm",
+                    "rounded-sm shadow-xs",
                     "border border-transparent",
                     "text-sm font-sans text-white",
                     "bg-primary-400 hover:bg-primary-900",
-                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
                 ),
                 id = "btn-toast-important"
             ) {
@@ -92,7 +92,7 @@ private fun showToast(container: String, initialize: Tag<HTMLLIElement>.() -> Un
         duration = 6000L,
         """flex flex-row shrink-0 gap-2 justify-center
             | w-max px-4 py-2.5
-            | rounded shadow-sm
+            | rounded shadow-xs
             | border border-transparent
             | text-sm font-sans
         """.trimMargin(),

@@ -34,11 +34,11 @@ fun RenderContext.listboxDemo() {
             listboxButton(
                 joinClasses(
                     "flex items-center justify-end w-full py-2.5 px-4",
-                    "bg-white rounded cursor-default",
+                    "bg-white rounded-sm cursor-default",
                     "border border-primary-600",
                     "font-sans text-sm text-left text-primary-800",
                     "hover:border-primary-8002",
-                    "focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800"
+                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600 focus:border-primary-800"
                 )
             ) {
                 span("block truncate w-full") {
@@ -50,9 +50,9 @@ fun RenderContext.listboxDemo() {
             listboxItems(
                 joinClasses(
                     "max-h-60 py-1 overflow-auto origin-top z-30",
-                    "bg-white rounded shadow-md divide-y divide-gray-100",
+                    "bg-white rounded-sm shadow-md divide-y divide-gray-100",
                     "ring-1 ring-primary-600 ring-opacity-5",
-                    "focus:outline-none",
+                    "focus:outline-hidden",
                 ),
                 tag = RenderContext::ul
             ) {

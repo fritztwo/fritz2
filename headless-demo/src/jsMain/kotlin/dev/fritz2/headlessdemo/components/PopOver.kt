@@ -32,11 +32,11 @@ fun RenderContext.popOverDemo() {
         popOverButton(
             joinClasses(
                 "inline-flex justify-center w-40 px-4 py-2 sm:col-start-2",
-                "rounded shadow-sm bg-primary-800",
+                "rounded-sm shadow-xs bg-primary-800",
                 "border border-transparent",
                 "text-sm text-white",
                 "hover:bg-primary-900",
-                "focus:outline-none focus:ring-4 focus:ring-primary-600"
+                "focus:outline-hidden focus:ring-4 focus:ring-primary-600"
             )
         ) {
             className(opened.map { if (it) "" else "text-opacity-90" })
@@ -55,7 +55,7 @@ fun RenderContext.popOverDemo() {
             joinClasses(
                 "z-30 max-w-sm lg:max-w-3xl px-0",
                 "bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
-                "focus:outline-none"
+                "focus:outline-hidden"
             )
         ) {
             placement = PlacementValues.bottomStart
@@ -78,7 +78,7 @@ fun RenderContext.popOverDemo() {
                             "flex items-center p-2 -m-3",
                             "transition duration-150 ease-in-out rounded-lg",
                             "hover:bg-primary-200",
-                            "focus:outline-none focus:ring-4 focus:ring-primary-600"
+                            "focus:outline-hidden focus:ring-4 focus:ring-primary-600"
                         )
                     ) {
                         attr("key", "{$item.name}")
@@ -122,7 +122,7 @@ fun RenderContext.popOverDemo() {
                         joinClasses(
                             "z-30 max-w-sm lg:max-w-3xl px-0",
                             "bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
-                            "focus:outline-none"
+                            "focus:outline-hidden"
                         )
                     ) {
                         placement = PlacementValues.bottomStart

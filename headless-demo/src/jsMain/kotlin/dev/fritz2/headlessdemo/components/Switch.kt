@@ -20,7 +20,7 @@ fun RenderContext.switchDemo() {
                 "cursor-pointer rounded-full",
                 "border-2 border-transparent ring-1 ring-primary-400",
                 "transition-colors ease-in-out duration-200",
-                "focus:outline-none focus:ring-4 focus:ring-primary-600"
+                "focus:outline-hidden focus:ring-4 focus:ring-primary-600"
             )
         ) {
             value(switchState)
@@ -29,7 +29,7 @@ fun RenderContext.switchDemo() {
             span(
                 joinClasses(
                     "inline-block h-5 w-5",
-                    "rounded-full bg-white shadow pointer-events-none",
+                    "rounded-full bg-white shadow-sm pointer-events-none",
                     "ring-0",
                     "transform transition ease-in-out duration-200",
                 )
@@ -55,7 +55,7 @@ fun RenderContext.switchDemo() {
                     "cursor-pointer rounded-full",
                     "border-2 border-transparent ring-1 ring-primary-400",
                     "transition-colors ease-in-out duration-200",
-                    "focus:outline-none focus:ring-4 focus:ring-primary-600"
+                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600"
                 )
             ) {
                 className(enabled.map { if (it) "bg-primary-700" else "bg-primary-300" })
@@ -63,7 +63,7 @@ fun RenderContext.switchDemo() {
                 span(
                     joinClasses(
                         "inline-block h-5 w-5",
-                        "rounded-full bg-white shadow pointer-events-none",
+                        "rounded-full bg-white shadow-sm pointer-events-none",
                         "ring-0",
                         "transform transition ease-in-out duration-200"
                     )

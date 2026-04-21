@@ -39,9 +39,9 @@ private fun RenderContext.renderCombobox(
 
         comboboxPanelReference(
             joinClasses(
-                "w-full py-2.5 px-4 flex items-center bg-white rounded border border-primary-600",
+                "w-full py-2.5 px-4 flex items-center bg-white rounded-sm border border-primary-600",
                 "cursor-default font-sans text-sm text-left text-primary-800 hover:border-primary-800",
-                "focus-within:outline-none focus-within:ring-4 focus-within:ring-primary-600",
+                "focus-within:outline-hidden focus-within:ring-4 focus-within:ring-primary-600",
                 "focus-within:border-primary-800"
             ),
         ) {
@@ -73,8 +73,8 @@ private fun RenderContext.renderCombobox(
 
         comboboxItems(
             joinClasses(
-                "max-h-60 py-1 overflow-auto origin-top z-30 bg-white rounded shadow-md divide-y divide-gray-100",
-                "ring-1 ring-primary-600 ring-opacity-5 focus:outline-none"
+                "max-h-60 py-1 overflow-auto origin-top z-30 bg-white rounded-sm shadow-md divide-y divide-gray-100",
+                "ring-1 ring-primary-600 ring-opacity-5 focus:outline-hidden"
             )
         ) {
             addMiddleware(offset(5))
@@ -286,7 +286,7 @@ fun RenderContext.comboboxTestdrive() {
 
 
 private fun RenderContext.demoCard(title: String, content: RenderContext.() -> Unit) {
-    div("p-4 space-y-4 bg-primary-100 rounded border shadow") {
+    div("p-4 space-y-4 bg-primary-100 rounded-sm border shadow-sm") {
         h2("font-semibold") {
             +title
         }
@@ -308,7 +308,7 @@ private fun RenderContext.highlightedText(text: String, highlight: String) =
 
 private fun RenderContext.demoButton(text: String, id: String? = null): Tag<HTMLButtonElement> =
     button(
-        "p-2 bg-primary-500 hover:bg-primary-600 shadow rounded text-sm text-primary-900",
+        "p-2 bg-primary-500 hover:bg-primary-600 shadow-sm rounded-sm text-sm text-primary-900",
         id
     ) {
         type("button")

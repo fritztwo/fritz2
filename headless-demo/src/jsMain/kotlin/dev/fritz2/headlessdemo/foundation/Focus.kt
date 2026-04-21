@@ -12,11 +12,11 @@ import org.w3c.dom.HTMLButtonElement
 
 fun RenderContext.btn(id: String? = null, init: Tag<HTMLButtonElement>.() -> Unit) = button(
     """inline-flex justify-center w-72 px-4 py-2 sm:col-start-2
-    | rounded shadow-sm bg-primary-800 disabled:bg-primary-600
+    | rounded shadow-xs bg-primary-800 disabled:bg-primary-600
     | border border-transparent
     | text-sm text-white
     | hover:bg-primary-900
-    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+    | focus:outline-hidden focus:ring-4 focus:ring-primary-600""".trimMargin(),
     id = id ?: Id.next()
 ) {
     init()
@@ -67,7 +67,7 @@ fun RenderContext.testTrapFocus() {
                 div(
                     """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
                     | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-                    | focus:outline-none
+                    | focus:outline-hidden
                 """.trimMargin()
                 ) {
                     transition(
@@ -87,7 +87,7 @@ fun RenderContext.testTrapFocus() {
                             """flex items-center p-2 m-1 
                             | transition duration-150 ease-in-out rounded-lg 
                             | hover:bg-primary-200 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                            | focus:outline-hidden focus:ring-4 focus:ring-primary-600""".trimMargin(),
                             id = "$testId-Tab-Item-$it"
                         ) {
                             attr("tabindex", "0")
@@ -157,7 +157,7 @@ fun RenderContext.testTrapFocus() {
         div(
             """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
                     | overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-                    | focus:outline-none
+                    | focus:outline-hidden
                 """.trimMargin()
         ) {
             className(toggle.data.map {
@@ -182,7 +182,7 @@ fun RenderContext.testTrapFocus() {
                         """flex items-center p-2 m-1 
                             | transition duration-150 ease-in-out rounded-lg 
                             | hover:bg-primary-200 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                            | focus:outline-hidden focus:ring-4 focus:ring-primary-600""".trimMargin(),
                         id = "$testId-Tab-Item-$index"
                     ) {
                         attr("tabindex", "0")
@@ -260,7 +260,7 @@ fun RenderContext.testTrapFocus() {
                     div(
                         """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
                 | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-                | focus:outline-none
+                | focus:outline-hidden
                 """.trimMargin()
                     ) {
                         transition(
@@ -296,7 +296,7 @@ fun RenderContext.testTrapFocus() {
                                         """flex items-center p-2 m-1 
                                     | transition duration-150 ease-in-out rounded-lg 
                                     | hover:bg-primary-200 
-                                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                                    | focus:outline-hidden focus:ring-4 focus:ring-primary-600""".trimMargin(),
                                         id = "Tab-Item-$it"
                                     ) {
                                         attr("tabindex", "0")
