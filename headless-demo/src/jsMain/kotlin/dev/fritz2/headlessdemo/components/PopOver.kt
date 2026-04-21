@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo.components
 
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.joinClasses
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
@@ -29,12 +30,14 @@ fun RenderContext.popOverDemo() {
 
     popOver(id = "popOver") {
         popOverButton(
-            """inline-flex justify-center w-40 px-4 py-2 sm:col-start-2
-            | rounded shadow-sm bg-primary-800
-            | border border-transparent
-            | text-sm text-white
-            | hover:bg-primary-900
-            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+            joinClasses(
+                "inline-flex justify-center w-40 px-4 py-2 sm:col-start-2",
+                "rounded shadow-sm bg-primary-800",
+                "border border-transparent",
+                "text-sm text-white",
+                "hover:bg-primary-900",
+                "focus:outline-none focus:ring-4 focus:ring-primary-600"
+            )
         ) {
             className(opened.map { if (it) "" else "text-opacity-90" })
             opened.map { if (it) "Close Popover" else "Open Popover" }.renderText()
@@ -49,10 +52,11 @@ fun RenderContext.popOverDemo() {
         }
 
         popOverPanel(
-            """z-30 max-w-sm lg:max-w-3xl px-0  
-            | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-            | focus:outline-none
-            """.trimMargin()
+            joinClasses(
+                "z-30 max-w-sm lg:max-w-3xl px-0",
+                "bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
+                "focus:outline-none"
+            )
         ) {
             placement = PlacementValues.bottomStart
             addMiddleware(offset(5))
@@ -70,17 +74,20 @@ fun RenderContext.popOverDemo() {
             div("relative grid gap-8 p-7 lg:grid-cols-2") {
                 solutions.forEach { item ->
                     a(
-                        """flex items-center p-2 -m-3 
-                        | transition duration-150 ease-in-out rounded-lg 
-                        | hover:bg-primary-200 
-                        | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                        joinClasses(
+                            "flex items-center p-2 -m-3",
+                            "transition duration-150 ease-in-out rounded-lg",
+                            "hover:bg-primary-200",
+                            "focus:outline-none focus:ring-4 focus:ring-primary-600"
+                        )
                     ) {
                         attr("key", "{$item.name}")
                         attr("tabindex", "0")
                         div(
-                            """flex items-center justify-center shrink-0 w-10 h-10 sm:h-12 sm:w-12 p-1 
-                            | rounded-lg 
-                            | bg-primary-100""".trimMargin()
+                            joinClasses(
+                                "flex items-center justify-center shrink-0 w-10 h-10 sm:h-12 sm:w-12 p-1",
+                                "rounded-lg bg-primary-100"
+                            )
                         ) {
                             item.icon(this)
                         }
@@ -104,17 +111,19 @@ fun RenderContext.popOverDemo() {
                 }
                 popOver(id = "innerPopOver") {
                     popOverButton(
-                        """flex items-center justify-center shrink-0 w-6 h-6 sm:h-8 sm:w-8 p-1 
-                        | rounded-lg 
-                        | bg-primary-100""".trimMargin()
+                        joinClasses(
+                            "flex items-center justify-center shrink-0 w-6 h-6 sm:h-8 sm:w-8 p-1",
+                            "rounded-lg bg-primary-100",
+                        )
                     ) {
                         icon("w-8 h-8 text-primary-600", content = HeroIcons.question_mark_circle)
                     }
                     popOverPanel(
-                        """z-30 max-w-sm lg:max-w-3xl px-0  
-                        | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-                        | focus:outline-none
-                        """.trimMargin()
+                        joinClasses(
+                            "z-30 max-w-sm lg:max-w-3xl px-0",
+                            "bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
+                            "focus:outline-none"
+                        )
                     ) {
                         placement = PlacementValues.bottomStart
                         addMiddleware(offset(5))

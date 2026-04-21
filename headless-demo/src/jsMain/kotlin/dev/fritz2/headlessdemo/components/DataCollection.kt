@@ -22,11 +22,13 @@ fun RenderContext.filterInput(id: String, filterStore: Store<String>) {
             icon("w-5 h-5 text-primary-600", content = HeroIcons.search)
         }
         inputTextfield(
-            """w-full max-w-sm py-2.5 pl-10 pr-2.5
-                    | bg-white rounded-sm border border-primary-600 hover:border-primary-800
-                    | font-sans text-sm text-primary-800 placeholder:text-slate-400
-                    | disabled:opacity-50
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+            joinClasses(
+                "w-full max-w-sm py-2.5 pl-10 pr-2.5",
+                "bg-white rounded-sm border border-primary-600 hover:border-primary-800",
+                "font-sans text-sm text-primary-800 placeholder:text-slate-400",
+                "disabled:opacity-50",
+                "focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800",
+            )
         ) {
             placeholder("Filter...")
         }
@@ -35,9 +37,11 @@ fun RenderContext.filterInput(id: String, filterStore: Store<String>) {
 
 fun Tag<HTMLTableRowElement>.column(title: String, button: Tag<HTMLDivElement>.() -> Unit) {
     th(
-        """sticky top-0 pl-3 py-2.5 z-10
-            | bg-white tracking-wider
-            | text-left text-sm font-medium text-primary-700""".trimMargin()
+        joinClasses(
+            "sticky top-0 pl-3 py-2.5 z-10",
+            "bg-white tracking-wider",
+            "text-left text-sm font-medium text-primary-700",
+        )
     ) {
         div("w-full flex flex-row items-center") {
             p("flex-auto") {
@@ -54,11 +58,11 @@ val sortIcons: DataCollection<Person, HTMLDivElement>.DataCollectionSortButton<H
     direction.render {
         icon(
             "text-primary-800 h-4 w-4 mt-1 mr-2", content =
-            when (it) {
-                SortDirection.NONE -> HeroIcons.selector
-                SortDirection.ASC -> HeroIcons.sort_ascending
-                SortDirection.DESC -> HeroIcons.sort_descending
-            }
+                when (it) {
+                    SortDirection.NONE -> HeroIcons.selector
+                    SortDirection.ASC -> HeroIcons.sort_ascending
+                    SortDirection.DESC -> HeroIcons.sort_descending
+                }
         )
     }
 }
@@ -75,9 +79,11 @@ fun RenderContext.collectionDemo() {
         tabList("max-w-sm flex p-1 space-x-1 bg-primary-900/20 rounded-md") {
             examples.forEach { (category, _, _) ->
                 tab(
-                    """w-full py-2.5 leading-5
-                    | text-sm font-medium rounded
-                    | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
+                    joinClasses(
+                        "w-full py-2.5 leading-5",
+                        "text-sm font-medium rounded",
+                        "focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600",
+                    )
                 ) {
                     className(selected.map { sel ->
                         if (sel == index) "bg-primary-800 text-white shadow-md"
@@ -108,8 +114,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
     filterInput("dataTable-filter", filterStore)
 
     dataCollection<Person>(
-        """relative h-96 border border-primary-400
-            | sm:rounded overflow-auto focus:outline-none""".trimMargin(),
+        "relative h-96 border border-primary-400 sm:rounded overflow-auto focus:outline-none",
         id = "dataTable"
     ) {
         data(storedPersons.data, Person::id)
@@ -173,9 +178,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
     }
 
     div(
-        """mt-4 p-2.5
-            | bg-primary-100 rounded shadow-sm
-            | ring-2 ring-primary-500""".trimMargin(),
+        "mt-4 p-2.5 bg-primary-100 rounded shadow-sm ring-2 ring-primary-500",
         id = "result"
     ) {
         attr("data-selected-count", selectionStore.data.map { it.count() })
@@ -211,19 +214,21 @@ fun RenderContext.gridListDemo(amount: Int) {
             dataCollectionSortButton(
                 compareBy(Person::fullName),
                 compareByDescending(Person::fullName),
-                """ml-3 flex justify-center items-center rounded border border-primary-700
-                    | cursor-default sm:text-sm
-                    | focus:outline-none focus:ring-2 focus:ring-primary-600 """.trimMargin(),
+                joinClasses(
+                    "ml-3 flex justify-center items-center rounded border border-primary-700",
+                    "cursor-default sm:text-sm",
+                    "focus:outline-none focus:ring-2 focus:ring-primary-600 ",
+                ),
                 id = "gridList-sort-name"
             ) {
                 direction.render(into = this) {
                     icon(
                         "text-primary-700 h-5 w-5 m-2", content =
-                        when (it) {
-                            SortDirection.NONE -> HeroIcons.selector
-                            SortDirection.ASC -> HeroIcons.sort_ascending
-                            SortDirection.DESC -> HeroIcons.sort_descending
-                        }
+                            when (it) {
+                                SortDirection.NONE -> HeroIcons.selector
+                                SortDirection.ASC -> HeroIcons.sort_ascending
+                                SortDirection.DESC -> HeroIcons.sort_descending
+                            }
                     )
                 }
             }
@@ -271,9 +276,12 @@ fun RenderContext.gridListDemo(amount: Int) {
                             div("-mt-px flex divide-x divide-primary-400") {
                                 div("w-0 flex-1 flex") {
                                     a(
-                                        """relative -mr-px w-0 flex-1 inline-flex items-center justify-center px-4 py-4
-                                            | border border-transparent rounded-bl-lg
-                                            | text-xs font-medium opacity-85""".trimMargin()
+                                        joinClasses(
+                                            "relative -mr-px w-0 flex-1 inline-flex items-center justify-center ",
+                                            "px-4 py-4",
+                                            "border border-transparent rounded-bl-lg",
+                                            "text-xs font-medium opacity-85",
+                                        )
                                     ) {
                                         icon("w-5 h-5", content = HeroIcons.mail)
                                         span("ml-3 truncate flex-1") { +item.email }
@@ -281,9 +289,11 @@ fun RenderContext.gridListDemo(amount: Int) {
                                 }
                                 div("-ml-px w-0 flex-1 flex") {
                                     a(
-                                        """relative w-0 flex-1 inline-flex items-center justify-center px-4 py-4
-                                            | border border-transparent rounded-br-lg
-                                            | text-xs font-medium opacity-85""".trimMargin()
+                                        joinClasses(
+                                            "relative w-0 flex-1 inline-flex items-center justify-center px-4 py-4",
+                                            "border border-transparent rounded-br-lg",
+                                            "text-xs font-medium opacity-85",
+                                        )
                                     ) {
                                         icon("w-5 h-5", content = HeroIcons.phone)
                                         span("ml-3 truncate") { +item.phone }
@@ -301,9 +311,7 @@ fun RenderContext.gridListDemo(amount: Int) {
     }
 
     div(
-        """mt-4 p-2.5
-            | bg-primary-100 rounded shadow-sm
-            | ring-2 ring-primary-500""".trimMargin(),
+        "mt-4 p-2.5 bg-primary-100 rounded shadow-sm ring-2 ring-primary-500",
         id = "result"
     ) {
         attr("data-selected-count", selectionStore.data.map { it.count() })

@@ -16,24 +16,19 @@ fun RenderContext.inputFieldDemo() {
                 +"Enter the framework's name"
             }
             div("mt-2") {
-                inputTextfield(
-                    """w-full py-2.5 px-2.5
-                        | bg-white rounded
-                        | font-sans text-sm 
-                        | disabled:opacity-50""".trimMargin()
-                ) {
+                inputTextfield("w-full py-2.5 px-2.5 bg-white rounded font-sans text-sm disabled:opacity-50") {
                     className(value.hasError.map {
                         if (it) joinClasses(
-                            """border border-error-600 
-                                | text-error-800 placeholder:text-error-400
-                                | hover:border-error-800  
-                                | focus:outline-none focus:ring-4 focus:ring-error-600 focus:border-error-800""".trimMargin()
+                            "border border-error-600",
+                            "text-error-800 placeholder:text-error-400",
+                            "hover:border-error-800",
+                            "focus:outline-none focus:ring-4 focus:ring-error-600 focus:border-error-800"
                         )
                         else joinClasses(
-                            """border border-primary-600 
-                                | text-primary-800 placeholder:text-slate-400
-                                | hover:border-primary-800  
-                                | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+                            "border border-primary-600",
+                            "text-primary-800 placeholder:text-slate-400",
+                            "hover:border-primary-800",
+                            "focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800"
                         )
                     })
                     placeholder("The name is...")
@@ -46,11 +41,13 @@ fun RenderContext.inputFieldDemo() {
         }
 
         div(
-            """mt-4 p-2.5
-            | bg-primary-100 rounded shadow-sm
-            | ring-2 ring-primary-500 
-            | text-sm text-primary-800
-            | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin(),
+            joinClasses(
+                "mt-4 p-2.5",
+                "bg-primary-100 rounded shadow-sm",
+                "ring-2 ring-primary-500",
+                "text-sm text-primary-800",
+                "focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800",
+            ),
             id = "result"
         ) {
             attr("tabindex", "0")

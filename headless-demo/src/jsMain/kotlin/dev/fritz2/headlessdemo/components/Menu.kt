@@ -1,6 +1,7 @@
 package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.joinClasses
 import dev.fritz2.core.storeOf
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.menu
@@ -31,12 +32,14 @@ fun RenderContext.menuDemo() {
             menu("inline-block text-left", id = "menu") {
                 div {
                     menuButton(
-                        """inline-flex justify-center items-center sm:col-start-2 px-4 py-2.5   
-                            | rounded shadow-sm
-                            | border border-transparent 
-                            | text-sm font-sans text-white 
-                            | hover:bg-primary-900 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                        joinClasses(
+                            "inline-flex justify-center items-center sm:col-start-2 px-4 py-2.5",
+                            "rounded shadow-sm",
+                            "border border-transparent",
+                            "text-sm font-sans text-white",
+                            "hover:bg-primary-900",
+                            "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                        )
                     ) {
                         className(opened.map { if (it) "bg-primary-900" else "bg-primary-800" })
                         opened.map { if (it) "Close Menu" else "Open Menu" }.renderText()
@@ -45,10 +48,12 @@ fun RenderContext.menuDemo() {
                 }
 
                 menuItems(
-                    """w-56 max-h-56 overflow-y-auto origin-top-left z-30
-                        | bg-white rounded shadow-md divide-y divide-gray-100
-                        | border-white border-2  
-                        | focus:outline-none""".trimMargin()
+                    joinClasses(
+                        "w-56 max-h-56 overflow-y-auto origin-top-left z-30",
+                        "bg-white rounded shadow-md divide-y divide-gray-100",
+                        "border-white border-2",
+                        "focus:outline-none",
+                    )
                 ) {
                     placement = PlacementValues.bottomStart
                     addMiddleware(offset(5))
@@ -64,11 +69,7 @@ fun RenderContext.menuDemo() {
                     )
 
                     entries.forEach { entry ->
-                        menuItem(
-                            """group flex items-center w-full px-2 py-2
-                                | disabled:opacity-50
-                                | text-sm""".trimMargin()
-                        ) {
+                        menuItem("group flex items-center w-full px-2 py-2 disabled:opacity-50 text-sm") {
                             className(active.combine(disabled) { a, d ->
                                 if (a && !d) {
                                     "bg-primary-600 text-white"

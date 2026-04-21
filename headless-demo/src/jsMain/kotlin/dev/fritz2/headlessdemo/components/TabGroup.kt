@@ -1,6 +1,7 @@
 package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.joinClasses
 import dev.fritz2.headless.components.tabGroup
 import kotlinx.coroutines.flow.map
 
@@ -27,9 +28,11 @@ fun RenderContext.tabsDemo() {
         tabList("flex p-1 space-x-1 bg-primary-900/20 rounded-md") {
             categories.keys.forEach { category ->
                 tab(
-                    """w-full py-2.5 leading-5
-                    | text-sm font-medium rounded
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                    joinClasses(
+                        "w-full py-2.5 leading-5",
+                        "text-sm font-medium rounded",
+                        "focus:outline-none focus:ring-4 focus:ring-primary-600"
+                    )
                 ) {
                     className(selected.map { sel ->
                         if (sel == index) "bg-primary-800 text-white shadow-md"
@@ -41,8 +44,8 @@ fun RenderContext.tabsDemo() {
         }
         tabPanels("mt-2") {
             categories.values.forEach { postings ->
-                panel("""bg-white rounded p-3
-                       | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
+                panel(
+                    "bg-white rounded p-3 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600"
                 ) {
                     ul {
                         postings.forEach { posting ->

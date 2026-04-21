@@ -1,6 +1,7 @@
 package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.joinClasses
 import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.radioGroup
 import dev.fritz2.headless.foundation.Aria
@@ -36,14 +37,16 @@ fun RenderContext.radioGroupDemo() {
                         })
 
                         radioGroupOptionToggle(
-                            """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5 
-                                | text-base font-sans rounded-md cursor-pointer
-                                | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
+                            joinClasses(
+                                "grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5",
+                                "text-base font-sans rounded-md cursor-pointer",
+                                "focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600"
+                            )
                         ) {
                             div("row-span-2 pr-2") {
                                 div("flex items-center justify-center w-6 h-6 rounded-full") {
                                     className(selected.map {
-                                        if(it) "bg-primary-800" else "bg-white"
+                                        if (it) "bg-primary-800" else "bg-white"
                                     })
                                     span("h-3 w-3 bg-white rounded-full") {}
                                 }

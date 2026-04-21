@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.Tag
+import dev.fritz2.core.joinClasses
 import dev.fritz2.headless.components.toast
 import dev.fritz2.headless.components.toastContainer
 import org.w3c.dom.HTMLLIElement
@@ -24,23 +25,20 @@ fun RenderContext.toastDemo() {
         )
     }
 
-    div(
-        """absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-            | flex flex-col gap-6
-            | bg-white rounded p-4
-        """.trimMargin()
-    ) {
+    div("absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-6 bg-white rounded p-4") {
         p {
             +"Press a button below to create a new toast:"
         }
         div("grid grid-cols-1 md:grid-cols-2 gap-4 max-w-1/2 max-h-1/2") {
             button(
-                """flex justify-center items-center px-4 py-2.5
-                    | rounded shadow-sm
-                    | border border-transparent
-                    | text-sm font-sans text-white
-                    | bg-primary-400 hover:bg-primary-900
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                joinClasses(
+                    "flex justify-center items-center px-4 py-2.5",
+                    "rounded shadow-sm",
+                    "border border-transparent",
+                    "text-sm font-sans text-white",
+                    "bg-primary-400 hover:bg-primary-900",
+                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                ),
                 id = "btn-toast-default"
             ) {
                 +"Default"
@@ -54,12 +52,14 @@ fun RenderContext.toastDemo() {
             }
 
             button(
-                """flex justify-center items-center px-4 py-2.5
-                    | rounded shadow-sm
-                    | border border-transparent
-                    | text-sm font-sans text-white
-                    | bg-primary-400 hover:bg-primary-900
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                joinClasses(
+                    "flex justify-center items-center px-4 py-2.5",
+                    "rounded shadow-sm",
+                    "border border-transparent",
+                    "text-sm font-sans text-white",
+                    "bg-primary-400 hover:bg-primary-900",
+                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                ),
                 id = "btn-toast-important"
             ) {
                 +"Important"

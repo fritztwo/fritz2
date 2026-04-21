@@ -14,33 +14,27 @@ fun RenderContext.textAreaDemo() {
     div("max-w-sm") {
         textArea {
             value(description)
-            textareaLabel(
-                """block mb-1.5 ml-1
-                | text-sm font-medium text-primary-800""".trimMargin()
-            ) {
+            textareaLabel("block mb-1.5 ml-1 text-sm font-medium text-primary-800") {
                 +"Describe the framework"
             }
             div("mt-1") {
-                textareaTextfield(
-                    """w-full py-2.5 px-2.5
-                        | bg-white rounded
-                        | font-sans text-sm 
-                        | disabled:opacity-50""".trimMargin()
-                ) {
-                    className(value.hasError.map {
-                        if (it) joinClasses(
-                            """border border-error-600 
-                                | text-error-800 placeholder:text-error-400
-                                | hover:border-error-800  
-                                | focus:outline-none focus:ring-4 focus:ring-error-600 focus:border-error-800""".trimMargin()
-                        )
-                        else joinClasses(
-                            """border border-primary-600 
-                                | text-primary-800 placeholder:text-slate-400
-                                | hover:border-primary-800  
-                                | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
-                        )
-                    })
+                textareaTextfield("w-full py-2.5 px-2.5 bg-white rounded font-sans text-sm disabled:opacity-50") {
+                    className(
+                        value.hasError.map {
+                            if (it) joinClasses(
+                                "border border-error-600",
+                                "text-error-800 placeholder:text-error-400",
+                                "hover:border-error-800",
+                                "focus:outline-none focus:ring-4 focus:ring-error-600 focus:border-error-800"
+                            )
+                            else joinClasses(
+                                "border border-primary-600",
+                                "text-primary-800 placeholder:text-slate-400",
+                                "hover:border-primary-800",
+                                "focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800"
+                            )
+                        }
+                    )
                     placeholder("fritz2 is super cool")
                 }
             }
@@ -50,11 +44,13 @@ fun RenderContext.textAreaDemo() {
         }
 
         div(
-            """mt-6 p-2.5
-            | bg-primary-100 rounded shadow-sm
-            | ring-2 ring-primary-500 
-            | text-sm text-primary-800
-            | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin(),
+            joinClasses(
+                "mt-6 p-2.5",
+                "bg-primary-100 rounded shadow-sm",
+                "ring-2 ring-primary-500",
+                "text-sm text-primary-800",
+                "focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800"
+            ),
             id = "result"
         ) {
             attr("tabindex", "0")

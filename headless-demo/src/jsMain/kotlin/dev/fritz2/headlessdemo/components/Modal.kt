@@ -40,10 +40,12 @@ fun RenderContext.modalDemo() {
                     }
 
                     div(
-                        """inline-block align-bottom sm:align-middle w-full sm:max-w-2xl px-6 py-10 sm:p-14 
-                    | bg-white rounded-lg
-                    | shadow-xl transform transition-all 
-                    | text-left overflow-hidden""".trimMargin()
+                        joinClasses(
+                            "inline-block align-bottom sm:align-middle w-full sm:max-w-2xl px-6 py-10 sm:p-14",
+                            "bg-white rounded-lg",
+                            "shadow-xl transform transition-all",
+                            "text-left overflow-hidden",
+                        )
                     ) {
                         transition(
                             "ease-out duration-300",
@@ -68,24 +70,28 @@ fun RenderContext.modalDemo() {
                         }
                         div("flex flex-col items-center sm:flex-row sm:justify-end gap-2 mt-6") {
                             button(
-                                """inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2
-                            | rounded shadow-sm 
-                            | border border-transparent
-                            | text-sm text-primary-800
-                            | hover:bg-primary-400
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                                joinClasses(
+                                    "inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2",
+                                    "rounded shadow-sm",
+                                    "border border-transparent",
+                                    "text-sm text-primary-800",
+                                    "hover:bg-primary-400",
+                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                ),
                                 id = "button-stay"
                             ) {
                                 type("button")
                                 +"Stay"
                             }
                             button(
-                                """inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2
-                            | rounded shadow-sm 
-                            | border border-transparent
-                            | text-sm text-primary-800
-                            | hover:bg-primary-400
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                                joinClasses(
+                                    "inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2",
+                                    "rounded shadow-sm",
+                                    "border border-transparent",
+                                    "text-sm text-primary-800",
+                                    "hover:bg-primary-400",
+                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                ),
                                 id = "button-cancel"
                             ) {
                                 type("button")
@@ -93,12 +99,14 @@ fun RenderContext.modalDemo() {
                                 clicks handledBy close
                             }
                             button(
-                                """inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2
-                            | rounded shadow-sm bg-primary-800
-                            | border border-transparent
-                            | text-sm text-white
-                            | hover:bg-primary-900
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                                joinClasses(
+                                    "inline-flex justify-center w-full sm:w-32 px-4 py-2 sm:col-start-2",
+                                    "rounded shadow-sm bg-primary-800",
+                                    "border border-transparent",
+                                    "text-sm text-white",
+                                    "hover:bg-primary-900",
+                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                ),
                                 id = "button-close"
                             ) {
                                 type("button")
