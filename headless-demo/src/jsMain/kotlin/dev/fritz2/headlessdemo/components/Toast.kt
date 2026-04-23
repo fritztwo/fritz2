@@ -29,7 +29,7 @@ fun RenderContext.toastDemo() {
         p {
             +"Press a button below to create a new toast:"
         }
-        div("grid grid-cols-1 md:grid-cols-2 gap-4 max-w-1/2 max-h-1/2") {
+        div("grid grid-cols-1 md:grid-cols-2 gap-4 max-h-1/2") {
             button(
                 joinClasses(
                     "flex justify-center items-center px-4 py-2.5",
