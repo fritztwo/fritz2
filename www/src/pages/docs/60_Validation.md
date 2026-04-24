@@ -300,7 +300,7 @@ Person.validate(invalidPerson)
 The messages are easy to distinguish because their paths include the index. Based on the zero-based index, 
 the addresses at positions `0` and `2` are therefore invalid.
 
-### Using Meta Data
+### Using Metadata
 
 Up to this point, we have only looked at validations in isolation.
 
@@ -393,6 +393,164 @@ Metadata types can, of course, be as complex as needed!
 
 If you require more than just a simple `Enum`, you should create a **dedicated** `data class` that encapsulates 
 all the necessary data.
+:::
+
+### Dealing with reactive Metadata and ValidatingStore
+
+Now that you are familiar with [integrating validation](#integrate-validation-into-stores) into a `Store` using
+the specialized `ValidatingStore` and understand the motivation [behind metadata](#using-metadata) in validation, 
+it is time to discuss how to use both together.
+
+There is a significant difference between static metadata — those that do not change during the course of an 
+application's use — and those that actually change analogously to the state of an application and are therefore
+potentially different with each validation run.
+
+Let's first look at the simpler case where the metadata is static and possibly only depends on the configuration
+of the application instance.
+
+We will continue using the example from the previous section.
+
+We first create two data sets:
+- a valid person
+- an invalid person who should generate validation messages
+
+```kotlin
+val chris = Person(
+    "Chris",
+    48,
+    listOf(
+        Address(
+            "Rosestreet 220",
+            "12345",
+            "Gosecamp",
+            "Germany"
+        )
+    )
+)
+
+val invalidChris = chris.copy(
+    name = "", // no name
+    age = 101, // too old
+    addresses = chris.addresses.map { address ->
+        address.copy(
+            street = "", // no street
+        )
+    }
+)
+```
+
+With this, we can create a store:
+```kotlin
+val storedPerson = ValidatingStore(chris, Person.validate, Progress.Address, Job())
+//                                                         ^^^^^^^^^^^^^^^^
+//                                                         We must pass initial metadata
+//                                                         We chose the maximum progress to see all messages
+```
+
+Note that the metadata we pass in the constructor is used for all validations. They are therefore static over the 
+entire lifetime of the store.
+
+We can demonstrate the validation with the following minimal UI:
+```kotlin
+render {
+    val storedPerson = ValidatingStore(chris, Person.validate, Progress.Address, job)
+
+    button {
+        +"Set invalid Data"
+        clicks.map { invalidChris } handledBy storedPerson.update
+    }
+    p {
+        +"Messages: "
+        ul {
+            storedPerson.messages.renderEach { message ->
+                li { +message.toString() }
+            }
+        }
+    }
+}
+```
+
+Initially, no messages are visible. After clicking the button, the following messages appear as expected:
+```text
+Message(path=.name, severity=Error, text=Please provide a name)
+Message(path=.age, severity=Warning, text=Is the person really older than 100 years‽)
+Message(path=.addresses.0.street, severity=Error, text=Please provide a street)
+```
+
+As a rule, however, metadata will not be static, but — just like the functional data — will be dynamically dependent 
+on the user's actions. So how can we use such dynamic metadata for validations?
+
+We must derive our own type from `ValidatingStore` and implement handlers within it that call the following function:
+```kotlin
+protected fun validate(data: D, metadata: T = metadataDefault): List<M>
+```
+
+The following implementation allows injecting a `Progress` value to call the validation with this metadata set:
+```kotlin
+val storedPerson = object : ValidatingStore<Person, Progress, Message>(
+    invalidChris, Person.validate, Progress.Core, job
+) {
+    val validate = handle<Progress> { state, progress ->
+    //                    ^^^^^^^^           ^^^^^^^^
+    //                    Enable to pass a `Progress`-object
+        
+        validate(state, progress)
+        //              ^^^^^^^^
+        //              pass the Progress-object into the actual validation
+        state
+    }
+}
+```
+
+Now we still need a store for the UI state — in our example, the `Progress` — and we must connect its reactive 
+state with the handler created above:
+```kotlin
+val storedProgress = storeOf(Progress.Core, job)
+
+// here the "magic" happens: the changed Progress will trigger a new validation
+storedProgress.data handledBy storedPerson.validate
+```
+
+Now we can slightly adjust the example: We change the button so that it toggles the current progress back and forth 
+between the `Progress.Core` and the `Progress.Address` value. We remember that the address validation only takes 
+effect at the `Progress.Address` value. Only then will the message regarding the invalid street appear.
+```kotlin
+button {
+    +"Toggle Progress"
+    clicks.map {
+        if (storedProgress.current == Progress.Address) Progress.Core else Progress.Address
+    } handledBy storedProgress.update
+}
+p {
+    +"Progress:"
+    storedProgress.data.renderText()
+}
+p {
+    +"Messages:"
+    ul {
+        storedPerson.messages.renderEach { message ->
+            li { +message.toString() }
+        }
+    }
+}
+```
+
+At the beginning, as expected, only these two messages are displayed in the `Progress.Core` state:
+```text
+Message(path=.name, severity=Error, text=Please provide a name)
+Message(path=.age, severity=Warning, text=Is the person really older than 100 years‽)
+```
+
+If you switch to `Progress.Address`, the message about the missing street is also displayed:
+```text
+Message(path=.name, severity=Error, text=Please provide a name)
+Message(path=.age, severity=Warning, text=Is the person really older than 100 years‽)
+Message(path=.addresses.0.street, severity=Error, text=Please provide a street)
+```
+
+:::info
+Of course, you can pass the metadata into the `Handler` in any way intended by fritz2, e.g., through an event
+triggered by the user, such as clicking a "Next" button or similar.
 :::
 
 ### Summary of Inspector-Mappings
