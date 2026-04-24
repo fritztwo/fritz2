@@ -90,12 +90,13 @@ private fun showToast(container: String, initialize: Tag<HTMLLIElement>.() -> Un
     toast(
         container,
         duration = 6000L,
-        """flex flex-row shrink-0 gap-2 justify-center
-            | w-max px-4 py-2.5
-            | rounded shadow-xs
-            | border border-transparent
-            | text-sm font-sans
-        """.trimMargin(),
+        joinClasses(
+            "flex flex-row shrink-0 gap-2 justify-center",
+            "w-max px-4 py-2.5",
+            "rounded shadow-xs",
+            "border border-transparent",
+            "text-sm font-sans",
+        ),
         nextToastId()
     ) {
         initialize()

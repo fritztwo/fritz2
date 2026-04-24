@@ -37,7 +37,7 @@ fun RenderContext.listboxDemo() {
                     "bg-white rounded-sm cursor-default",
                     "border border-primary-600",
                     "font-sans text-sm text-left text-primary-800",
-                    "hover:border-primary-8002",
+                    "hover:border-primary-800",
                     "focus:outline-hidden focus:ring-4 focus:ring-primary-600 focus:border-primary-800"
                 )
             ) {

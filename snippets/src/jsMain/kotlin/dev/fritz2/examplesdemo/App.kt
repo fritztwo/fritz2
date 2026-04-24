@@ -42,9 +42,11 @@ fun RenderContext.overview() {
         div("w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12") {
             pages.forEach {
                 a(
-                    """-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
-                    | ring-offset-2 ring-offset-amber-400 hover:outline-hidden shadow-lg rounded-lg bg-white 
-                    | opacity-80 hover:opacity-100 transition ease-in-out duration-150""".trimMargin()
+                    joinClasses(
+                        "-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white",
+                        "ring-offset-2 ring-offset-amber-400 hover:outline-hidden shadow-lg rounded-lg bg-white",
+                        "opacity-80 hover:opacity-100 transition ease-in-out duration-150"
+                    )
                 ) {
                     href("#")
                     /* <!-- Heroicon name: outline/support --> */
