@@ -114,12 +114,14 @@ fun RenderContext.overview() {
         div("w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12") {
             pages.filter { it.value is DemoPage }.map { (k, v) -> k to v as DemoPage }.forEach { (key, value) ->
                 a(
-                    """-m-3 p-3 pr-5 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
-                    | ring-offset-2 ring-offset-primary-600 hover:outline-none shadow-lg rounded-lg bg-white 
-                    | opacity-80 hover:opacity-100 transition ease-in-out duration-150""".trimMargin()
+                    joinClasses(
+                        "-m-3 p-3 pr-5 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white",
+                        "ring-offset-2 ring-offset-primary-600 hover:outline-hidden shadow-lg rounded-lg bg-white",
+                        "opacity-80 hover:opacity-100 transition ease-in-out duration-150",
+                    )
                 ) {
                     href("#")
-                    icon("flex-shrink-0 h-6 w-6 text-primary-800", content = HeroIcons.support)
+                    icon("shrink-0 h-6 w-6 text-primary-800", content = HeroIcons.support)
                     div("ml-4") {
                         p("text-base font-medium text-gray-900") { +value.title }
                         p("mt-1 text-sm text-gray-500") { +value.description }
@@ -133,11 +135,15 @@ fun RenderContext.overview() {
 }
 
 fun main() {
+    js("require('./styles.css')")
 
     val router = routerOf("")
 
     render {
-        main(scope = { set(SHOW_COMPONENT_STRUCTURE, true) }) {
+        main(
+            "h-screen bg-linear-to-b from-primary-400 to-primary-200",
+            scope = { set(SHOW_COMPONENT_STRUCTURE, true) }
+        ) {
             router.data.render { route ->
                 div("p-4") {
                     (pages[route]?.content ?: RenderContext::overview)()
@@ -145,6 +151,7 @@ fun main() {
             }
 
             portalRoot()
+            div() { }
         }
     }
 }

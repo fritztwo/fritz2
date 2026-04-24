@@ -1,6 +1,7 @@
 package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.joinClasses
 import dev.fritz2.core.storeOf
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.listbox
@@ -31,12 +32,14 @@ fun RenderContext.listboxDemo() {
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
             listboxButton(
-                """flex items-center justify-end w-full py-2.5 px-4 
-                    | bg-white rounded cursor-default
-                    | border border-primary-600 
-                    | font-sans text-sm text-left text-primary-800
-                    | hover:border-primary-800 
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+                joinClasses(
+                    "flex items-center justify-end w-full py-2.5 px-4",
+                    "bg-white rounded-sm cursor-default",
+                    "border border-primary-600",
+                    "font-sans text-sm text-left text-primary-800",
+                    "hover:border-primary-800",
+                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600 focus:border-primary-800"
+                )
             ) {
                 span("block truncate w-full") {
                     value.data.renderText()
@@ -45,11 +48,13 @@ fun RenderContext.listboxDemo() {
             }
 
             listboxItems(
-                """max-h-60 py-1 overflow-auto origin-top z-30
-                    | bg-white rounded shadow-md divide-y divide-gray-100
-                    | ring-1 ring-primary-600 ring-opacity-5 
-                    | focus:outline-none""".trimMargin(),
-                        tag = RenderContext::ul
+                joinClasses(
+                    "max-h-60 py-1 overflow-auto origin-top z-30",
+                    "bg-white rounded-sm shadow-md divide-y divide-gray-100",
+                    "ring-1 ring-primary-600 ring-opacity-5",
+                    "focus:outline-hidden",
+                ),
+                tag = RenderContext::ul
             ) {
                 placement = PlacementValues.bottomStart
                 addMiddleware(offset(5))
@@ -67,9 +72,11 @@ fun RenderContext.listboxDemo() {
                 characters.forEach { (entry, disabledState) ->
                     listboxItem(
                         entry,
-                        """w-full relative py-2 pl-10 pr-4
-                            | cursor-default select-none disabled:opacity-50
-                            | text-sm""".trimMargin(),
+                        joinClasses(
+                            "w-full relative py-2 pl-10 pr-4",
+                            "cursor-default select-none disabled:opacity-50",
+                            "text-sm",
+                        ),
                         tag = RenderContext::li
                     ) {
                         className(active.combine(disabled) { a, d ->

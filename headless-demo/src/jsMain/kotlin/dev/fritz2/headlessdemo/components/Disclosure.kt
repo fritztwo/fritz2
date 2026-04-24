@@ -55,7 +55,7 @@ fun RenderContext.disclosureDemo() {
                                     "relative z-10 flex justify-between items-start w-full my-2 p-4",
                                     "bg-primary-800 rounded-lg hover:bg-primary-900",
                                     "text-left text-white",
-                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                    "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
                                 )
                             ) {
                                 span("font-medium") { +question }

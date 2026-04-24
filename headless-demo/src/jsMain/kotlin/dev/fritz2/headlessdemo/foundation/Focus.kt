@@ -11,12 +11,14 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 
 fun RenderContext.btn(id: String? = null, init: Tag<HTMLButtonElement>.() -> Unit) = button(
-    """inline-flex justify-center w-72 px-4 py-2 sm:col-start-2
-    | rounded shadow-sm bg-primary-800 disabled:bg-primary-600
-    | border border-transparent
-    | text-sm text-white
-    | hover:bg-primary-900
-    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+    joinClasses(
+        "inline-flex justify-center w-72 px-4 py-2 sm:col-start-2",
+        "rounded shadow-xs bg-primary-800 disabled:bg-primary-600",
+        "border border-transparent",
+        "text-sm text-white",
+        "hover:bg-primary-900",
+        "focus:outline-hidden focus:ring-4 focus:ring-primary-600",
+    ),
     id = id ?: Id.next()
 ) {
     init()
@@ -65,10 +67,11 @@ fun RenderContext.testTrapFocus() {
         toggle.data.combine(storedInitialFocus.data, ::Pair).render { (opened, initialFocus) ->
             if (opened) {
                 div(
-                    """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
-                    | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-                    | focus:outline-none
-                """.trimMargin()
+                    joinClasses(
+                        "z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4",
+                        "bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
+                        "focus:outline-hidden",
+                    )
                 ) {
                     transition(
                         "transition ease-out duration-200",
@@ -84,10 +87,12 @@ fun RenderContext.testTrapFocus() {
                     }
                     (1..3).forEach {
                         div(
-                            """flex items-center p-2 m-1 
-                            | transition duration-150 ease-in-out rounded-lg 
-                            | hover:bg-primary-200 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                            joinClasses(
+                                "flex items-center p-2 m-1",
+                                "transition duration-150 ease-in-out rounded-lg",
+                                "hover:bg-primary-200",
+                                "focus:outline-hidden focus:ring-4 focus:ring-primary-600"
+                            ),
                             id = "$testId-Tab-Item-$it"
                         ) {
                             attr("tabindex", "0")
@@ -155,10 +160,11 @@ fun RenderContext.testTrapFocus() {
         }
 
         div(
-            """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
-                    | overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-                    | focus:outline-none
-                """.trimMargin()
+            joinClasses(
+                "z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4",
+                "overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
+                "focus:outline-hidden",
+            )
         ) {
             className(toggle.data.map {
                 if (it) "bg-white" else ""
@@ -179,10 +185,12 @@ fun RenderContext.testTrapFocus() {
             storedInitialFocus.data.render { initialFocus ->
                 (1..3).forEach { index ->
                     div(
-                        """flex items-center p-2 m-1 
-                            | transition duration-150 ease-in-out rounded-lg 
-                            | hover:bg-primary-200 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                        joinClasses(
+                            "flex items-center p-2 m-1",
+                            "transition duration-150 ease-in-out rounded-lg",
+                            "hover:bg-primary-200",
+                            "focus:outline-hidden focus:ring-4 focus:ring-primary-600"
+                        ),
                         id = "$testId-Tab-Item-$index"
                     ) {
                         attr("tabindex", "0")
@@ -258,10 +266,11 @@ fun RenderContext.testTrapFocus() {
             toggle.data.render { opened ->
                 if (opened) {
                     div(
-                        """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
-                | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
-                | focus:outline-none
-                """.trimMargin()
+                        joinClasses(
+                            "z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4",
+                            "bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
+                            "focus:outline-hidden",
+                        )
                     ) {
                         transition(
                             "transition ease-out duration-200",
@@ -293,10 +302,12 @@ fun RenderContext.testTrapFocus() {
 
                                 (1..3).forEach {
                                     div(
-                                        """flex items-center p-2 m-1 
-                                    | transition duration-150 ease-in-out rounded-lg 
-                                    | hover:bg-primary-200 
-                                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
+                                        joinClasses(
+                                            "flex items-center p-2 m-1",
+                                            "transition duration-150 ease-in-out rounded-lg",
+                                            "hover:bg-primary-200",
+                                            "focus:outline-hidden focus:ring-4 focus:ring-primary-600"
+                                        ),
                                         id = "Tab-Item-$it"
                                     ) {
                                         attr("tabindex", "0")
@@ -390,6 +401,4 @@ fun RenderContext.testTrapFocus() {
             }
         }
     }
-
-
 }

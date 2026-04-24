@@ -12,18 +12,18 @@ fun RenderContext.fundamentals() {
                     +"Input"
                     `for`(store.id)
                 }
-                input("p-2 border border-1 border-gray-300 rounded-sm", id = store.id) {
+                input("p-2 border border border-gray-300 rounded-xs", id = store.id) {
                     placeholder("Add some input")
                     value(store.data)
                     changes.values() handledBy store.update
                 }
                 p { +"Value" }
                 store.data.render { content ->
-                    p("p-2 bg-gray-100 border border-1 border-gray-300 rounded-sm") {
+                    p("p-2 bg-gray-100 border border border-gray-300 rounded-xs") {
                         +content
                     }
                 }
-                button("p-2 bg-blue-400 text-white border border-1 border-gray-300 rounded-md") {
+                button("p-2 bg-blue-400 text-white border border border-gray-300 rounded-md") {
                     +"Capitalize"
                     clicks handledBy store.handle { it.uppercase() }
                 }

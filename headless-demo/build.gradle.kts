@@ -11,8 +11,15 @@ kotlin {
     jvm() // needed for kspCommonMainMetadata
 
     js(IR) {
-        browser()
-    }.binaries.executable()
+        browser {
+            commonWebpackConfig {
+                cssSupport {
+                    enabled = true
+                }
+            }
+        }
+        binaries.executable()
+    }
 
     sourceSets {
         all {
@@ -28,17 +35,10 @@ kotlin {
         }
         jsMain {
             dependencies {
-                // tailwind
                 implementation(npm(libs.tailwindcss.core))
-                implementation(npm(libs.tailwindcss.forms))
-
-                // webpack
+                implementation(npm(libs.tailwindcss.postcss))
                 implementation(npm(libs.postcss.core))
                 implementation(npm(libs.postcss.loader))
-                implementation(npm(libs.autoprefixer))
-                implementation(npm(libs.css.loader))
-                implementation(npm(libs.style.loader))
-                implementation(npm(libs.cssnano))
             }
         }
     }
@@ -49,7 +49,7 @@ dependencies {
 }
 
 project.tasks.withType(KotlinCompilationTask::class.java).configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
+    if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
