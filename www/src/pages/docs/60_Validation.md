@@ -134,7 +134,7 @@ type. Handle this `Flow` like any other `Flow` of a `List` — for example, rend
 
 ```kotlin
 // create a `ValidatingStore` by using an overloaded factory located in `dev.fritz2.validation`-package
-val store = storeOf(Person("Chris", 48), Person::validate)
+val store = storeOf(Person("Chris", 48), Person.validate)
 
 // create some messages with shady data
 store.update(Person("", 101))
@@ -395,20 +395,24 @@ If you require more than just a simple `Enum`, you should create a **dedicated**
 all the necessary data.
 :::
 
-### Dealing with reactive Metadata and ValidatingStore
+### Dealing with Metadata and ValidatingStore
 
 Now that you are familiar with [integrating validation](#integrate-validation-into-stores) into a `Store` using
 the specialized `ValidatingStore` and understand the motivation [behind metadata](#using-metadata) in validation, 
 it is time to discuss how to use both together.
 
-There is a significant difference between static metadata — those that do not change during the course of an 
-application's use — and those that actually change analogously to the state of an application and are therefore
-potentially different with each validation run.
+fritz2 offers support for both static and reactive metadata. In practice, the latter often play a crucial role, 
+as applications frequently build up their data model over a series of steps, 
+resulting in parts that cannot be valid yet. Typically, you do not want to display messages for these sections yet. 
+In this regard, the so-called UI state often plays an important role in validation; consequently, 
+it exists as part of the overall data model within a store and must be handled reactively.
 
-Let's first look at the simpler case where the metadata is static and possibly only depends on the configuration
-of the application instance.
+But sometimes metadata actually only exists as static data; in web applications, this might be data that is guaranteed 
+to remain constant throughout the duration of a session.
 
-We will continue using the example from the previous section.
+We will first consider the static case.
+
+We will simply continue using the example from the previous sections.
 
 We first create two data sets:
 - a valid person
@@ -441,10 +445,13 @@ val invalidChris = chris.copy(
 
 With this, we can create a store:
 ```kotlin
-val storedPerson = ValidatingStore(chris, Person.validate, Progress.Address, Job())
-//                                                         ^^^^^^^^^^^^^^^^
-//                                                         We must pass initial metadata
-//                                                         We chose the maximum progress to see all messages
+// we import the new factory from the `validation`-package!
+import dev.fritz2.validation.storeOf
+
+val storedPerson = storeOf(chris, Person.validate, Progress.Address, Job())
+//                                                 ^^^^^^^^^^^^^^^^
+//                                                 We must pass initial metadata
+//                                                 We chose the maximum progress to see all messages
 ```
 
 Note that the metadata we pass in the constructor is used for all validations. They are therefore static over the 
@@ -453,7 +460,7 @@ entire lifetime of the store.
 We can demonstrate the validation with the following minimal UI:
 ```kotlin
 render {
-    val storedPerson = ValidatingStore(chris, Person.validate, Progress.Address, job)
+    val storedPerson = storeOf(chris, Person.validate, Progress.Address)
 
     button {
         +"Set invalid Data"
@@ -480,35 +487,17 @@ Message(path=.addresses.0.street, severity=Error, text=Please provide a street)
 As a rule, however, metadata will not be static, but — just like the functional data — will be dynamically dependent 
 on the user's actions. So how can we use such dynamic metadata for validations?
 
-We must derive our own type from `ValidatingStore` and implement handlers within it that call the following function:
-```kotlin
-protected fun validate(data: D, metadata: T = metadataDefault): List<M>
-```
+There also is a *factory* for this case - in fact the primary constructor of the `ValidatingStore`, which is called 
+internally, takes a `Flow<T>` as ist default type.
 
-The following implementation allows injecting a `Progress` value to call the validation with this metadata set:
+Now we still need a store for the UI state — in our example, the `Progress` — and we must pass its `data`-flow to the
+validating store factory:
 ```kotlin
-val storedPerson = object : ValidatingStore<Person, Progress, Message>(
-    invalidChris, Person.validate, Progress.Core, job
-) {
-    val validate = handle<Progress> { state, progress ->
-    //                    ^^^^^^^^           ^^^^^^^^
-    //                    Enable to pass a `Progress`-object
-        
-        validate(state, progress)
-        //              ^^^^^^^^
-        //              pass the Progress-object into the actual validation
-        state
-    }
-}
-```
-
-Now we still need a store for the UI state — in our example, the `Progress` — and we must connect its reactive 
-state with the handler created above:
-```kotlin
-val storedProgress = storeOf(Progress.Core, job)
-
-// here the "magic" happens: the changed Progress will trigger a new validation
-storedProgress.data handledBy storedPerson.validate
+val storedProgress = storeOf(Progress.Core)
+val storedPerson = storeOf(invalidChris, Person2.validate, storedProgress.data)
+//                                                         ^^^^^^^^^^^^^^^^^^^
+//                                                         we pass a `Flow` of `Progress`, so each new value
+//                                                         on the flow will retrigger the `validate` handler
 ```
 
 Now we can slightly adjust the example: We change the button so that it toggles the current progress back and forth 
@@ -549,8 +538,11 @@ Message(path=.addresses.0.street, severity=Error, text=Please provide a street)
 ```
 
 :::info
-Of course, you can pass the metadata into the `Handler` in any way intended by fritz2, e.g., through an event
-triggered by the user, such as clicking a "Next" button or similar.
+Of course, you can can call the `public validate` handler manually and pass the metadata into the `Handler` in any way
+intended by fritz2, e.g., through an event triggered by the user, such as clicking a "Next" button or similar.
+
+If you disable the `validateAfterUpdate` flag in the constructor of `ValidatingStore`, you even must call this
+by yourself in order to fill and keep the `messages`-flow up to date.
 :::
 
 ### Summary of Inspector-Mappings

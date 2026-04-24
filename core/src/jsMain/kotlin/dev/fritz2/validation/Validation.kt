@@ -11,37 +11,54 @@ import kotlinx.coroutines.flow.*
  * A [ValidatingStore] is a [Store] which also contains a [Validation] for its model and by default applies it
  * to every update.
  *
- * This store is intentionally configured to validate the data on each update, that is why the [validateAfterUpdate]
- * parameter is set to `true` by default.
+ * You must provide some [metadata], which is reactive and thus by default provided by a [Flow]. There exist an
+ * alternative variant, which accepts a *static* value.
  *
- * There might be special situations where it is reasonable to disable this behaviour by setting [validateAfterUpdate]
+ * This store is intentionally configured to validate the data on each update, that is why the [validateAfterUpdate]
+ * parameter is set to `true` by default. If the [metadata] changes, the validation process is also triggered
+ * automatically.
+ *
+ * Beware that the initial state is not validated. If you want to validate the initial state, you must call the
+ * [validate] handler explicitly.
+ *
+ * There might be special situations where it is reasonable to disable this behavior by setting [validateAfterUpdate]
  * to `false` and to prefer applying the validation individually within custom handlers, for example if a model should
  * only be validated after the user has completed his input or if metadata is needed for the validation process.
- * Then be aware of the fact, that the call of the [validate] function actually updates the [messages] [Flow] already.
+ * Then be aware of the fact, that the call of the [validate] handler actually updates the [messages] [Flow] already.
  *
- * In order for the automatic validation to work, a [metadataDefault] value must be specified. This is needed due to no
- * specific metadata being present during automatic validation. When calling [validate] manually, the appropriate
- * metadata can be supplied directly.
+ * In order for the automatic validation to work, a [metadata] value must be specified. This is needed due to no
+ * specific metadata being present during automatic validation. When calling [validate] handler manually, the
+ * appropriate metadata must be supplied directly.
  *
  * If the new data is not passed to the store's state after validating it, the messages are probably out of sync with
  * the actual store's state!
  * This could lead to false assumptions and might produce hard to detect bugs in your application.
  *
  * @param initialData first current value of this [Store]
- * @param validation [Validation] function to use at the data on this [Store].
- * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @property validation [Validation] function to use at the data on this [Store].
+ * @property metadata [Flow] of metadata to be used by the automatic validation. If you habe only a static object,
+ * use the overloaded constrcutor, which supports this too.
  * @param job Job to be used by the [Store]
- * @param validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
- * @param id id of this [Store]. Ids of parent [Store]s will be concatenated.
+ * @property validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
+ * @property id id of this [Store]. Ids of parent [Store]s will be concatenated.
  */
 open class ValidatingStore<D, T, M>(
     initialData: D,
     private val validation: Validation<D, T, M>,
-    private val metadataDefault: T,
+    private val metadata: Flow<T>,
     job: Job,
     private val validateAfterUpdate: Boolean = true,
     override val id: String = Id.next(),
 ) : RootStore<D>(initialData, job, id) {
+
+    constructor(
+        initialData: D,
+        validation: Validation<D, T, M>,
+        metadata: T,
+        job: Job,
+        validateAfterUpdate: Boolean = true,
+        id: String = Id.next(),
+    ) : this(initialData, validation, flowOf(metadata), job, validateAfterUpdate, id)
 
     private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
 
@@ -50,6 +67,22 @@ open class ValidatingStore<D, T, M>(
      * Use this [Flow] to render out the validation-messages and to detect the valid state of the current [data] [Flow].
      */
     val messages: Flow<List<M>> = validationMessages.asStateFlow()
+
+    /**
+     * a [Handler] that allows to start a validation and updates the [messages] list.
+     *
+     * If [validateAfterUpdate] is `true`, then this handle gets called automatically on every change of [data]
+     * or [metadata].
+     *
+     * But one can call this also from the outside explicitly!
+     * This is useful in order to validate the initial data for example.
+     */
+    val validate = handle<T> { state, meta ->
+        validate(state, meta).also { validationMessages.value = it }
+        state
+    }
+
+    fun validate(data: D, metadata: T): List<M> = validation(data, metadata)
 
     /**
      * Resets the validation result.
@@ -63,25 +96,8 @@ open class ValidatingStore<D, T, M>(
         validationMessages.value = messages
     }
 
-    /**
-     * Validates the given [data] using the given [metadata], updates the [messages] list and returns them.
-     * If no metadata is specified, [metadataDefault] is used.
-     *
-     * Use this method from inside your [Handler]s to publish
-     * the new state of the validation result via the [messages] flow.
-     *
-     * @param data data to validate
-     * @param metadata metadata for validation
-     * @return [List] of messages
-     */
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun validate(data: D, metadata: T = metadataDefault): List<M> =
-        validation(data, metadata).also { validationMessages.value = it }
-
     init {
-        if (validateAfterUpdate) data.drop(1) handledBy { newValue ->
-            validate(newValue, metadataDefault)
-        }
+        if (validateAfterUpdate) data.flatMapLatest { metadata }.drop(1) handledBy validate
     }
 }
 
@@ -94,22 +110,42 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
 /**
  * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
  *
- * The created [Store] validates its model after every update automatically.
+ * The created [Store] validates its model after every update of the data or the metadata automatically.
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
- * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param metadata metadata to be used by the automatic validation
  * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, T, M> storeOf(
     initialData: D,
     validation: Validation<D, T, M>,
-    metadataDefault: T,
+    metadata: Flow<T>,
     job: Job = Job(),
     id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadataDefault, job, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, metadata, job, validateAfterUpdate = true, id)
+
+/**
+ * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
+ *
+ * The created [Store] validates its model after every update automatically.
+ *
+ * @param initialData first current value of this [Store]
+ * @param validation [Validation] instance to use at the data on this [Store].
+ * @param metadata static metadata to be used by the automatic validation
+ * @param job Job to be used by the [Store]
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ */
+fun <D, T, M> storeOf(
+    initialData: D,
+    validation: Validation<D, T, M>,
+    metadata: T,
+    job: Job = Job(),
+    id: String = Id.next(),
+): ValidatingStore<D, T, M> =
+    ValidatingStore(initialData, validation, metadata, job, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
@@ -132,22 +168,42 @@ fun <D, M> storeOf(
 /**
  * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
  *
- * The created [Store] validates its model after every update automatically.
+ * The created [Store] validates its model after every update of the data or the metadata automatically.
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
- * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param metadata metadata to be used by the automatic validation
  * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, T, M> WithJob.storeOf(
     initialData: D,
     validation: Validation<D, T, M>,
-    metadataDefault: T,
+    metadata: Flow<T>,
     job: Job = this.job,
     id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadataDefault, job, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, metadata, job, validateAfterUpdate = true, id)
+
+/**
+ * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
+ *
+ * The created [Store] validates its model after every update automatically.
+ *
+ * @param initialData first current value of this [Store]
+ * @param validation [Validation] instance to use at the data on this [Store].
+ * @param metadata static metadata to be used by the automatic validation
+ * @param job Job to be used by the [Store]
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ */
+fun <D, T, M> WithJob.storeOf(
+    initialData: D,
+    validation: Validation<D, T, M>,
+    metadata: T,
+    job: Job = this.job,
+    id: String = Id.next(),
+): ValidatingStore<D, T, M> =
+    ValidatingStore(initialData, validation, metadata, job, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
