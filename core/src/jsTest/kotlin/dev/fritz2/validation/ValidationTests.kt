@@ -9,6 +9,7 @@ import dev.fritz2.validation.test.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLSpanElement
@@ -32,7 +33,14 @@ class FactoryFunctionTests {
     @Test
     fun testWithJobStoreOfWithFlowMetadataAndDataChangeFirst() = runTest {
         val storedMeta = storeOf(0)
-        val sut = storeOf(initialData = Person("Chris"), validation = Person.validate, metadata = storedMeta.data)
+        // Just as a PoC: We can achieve the "old" behavior quite easily
+        val sut = ValidatingStore(
+            initialData = Person("Chris"),
+            validation = Person.validate,
+            metadata = storedMeta.data,
+            modifier = { it.drop(1) }, // restore old behavior
+            job = job
+        )
 
         val id = Id.next()
         render {

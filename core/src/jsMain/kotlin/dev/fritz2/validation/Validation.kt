@@ -46,8 +46,8 @@ open class ValidatingStore<D, T, M>(
     initialData: D,
     protected val validation: Validation<D, T, M>,
     private val metadata: Flow<T>,
+    private val modifier: (Flow<T>) -> Flow<T> = { it },
     job: Job,
-    private val validateAfterUpdate: Boolean = true,
     override val id: String = Id.next(),
 ) : RootStore<D>(initialData, job, id) {
 
@@ -58,7 +58,30 @@ open class ValidatingStore<D, T, M>(
         job: Job,
         validateAfterUpdate: Boolean = true,
         id: String = Id.next(),
-    ) : this(initialData, validation, flowOf(metadata), job, validateAfterUpdate, id)
+    ) : this(
+        initialData,
+        validation,
+        flowOf(metadata),
+        modifier = { meta -> if (validateAfterUpdate) meta else meta.dropWhile { true } },
+        job,
+        id
+    )
+
+    constructor(
+        initialData: D,
+        validation: Validation<D, T, M>,
+        metadata: Flow<T>,
+        job: Job,
+        id: String = Id.next(),
+    ) : this(
+        initialData,
+        validation,
+        metadata,
+        { it },
+        //modifier = { meta -> if (validateAfterUpdate) meta else meta.dropWhile { true } },
+        job,
+        id
+    )
 
     private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
 
@@ -95,7 +118,7 @@ open class ValidatingStore<D, T, M>(
     }
 
     init {
-        if (validateAfterUpdate) data.flatMapLatest { metadata }.drop(1) handledBy validate
+        modifier(data.flatMapLatest { metadata }) handledBy validate
     }
 }
 
@@ -123,7 +146,13 @@ fun <D, T, M> storeOf(
     job: Job = Job(),
     id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadata, job, validateAfterUpdate = true, id)
+    ValidatingStore(
+        initialData = initialData,
+        validation = validation,
+        metadata = metadata,
+        job = job,
+        id = id
+    )
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
@@ -181,7 +210,7 @@ fun <D, T, M> WithJob.storeOf(
     job: Job = this.job,
     id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadata, job, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, metadata, job, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
