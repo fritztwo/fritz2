@@ -37,14 +37,14 @@ import kotlinx.coroutines.flow.*
  * @param initialData first current value of this [Store]
  * @property validation [Validation] function to use at the data on this [Store].
  * @property metadata [Flow] of metadata to be used by the automatic validation. If you habe only a static object,
- * use the overloaded constrcutor, which supports this too.
+ * use the overloaded constructor, which supports this too.
  * @param job Job to be used by the [Store]
  * @property validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
  * @property id id of this [Store]. Ids of parent [Store]s will be concatenated.
  */
 open class ValidatingStore<D, T, M>(
     initialData: D,
-    private val validation: Validation<D, T, M>,
+    protected val validation: Validation<D, T, M>,
     private val metadata: Flow<T>,
     job: Job,
     private val validateAfterUpdate: Boolean = true,
@@ -78,11 +78,9 @@ open class ValidatingStore<D, T, M>(
      * This is useful in order to validate the initial data for example.
      */
     val validate = handle<T> { state, meta ->
-        validate(state, meta).also { validationMessages.value = it }
+        validation(state, meta).also { validationMessages.value = it }
         state
     }
-
-    fun validate(data: D, metadata: T): List<M> = validation(data, metadata)
 
     /**
      * Resets the validation result.

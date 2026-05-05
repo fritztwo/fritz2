@@ -24,7 +24,7 @@ object PersonStore : ValidatingStore<Person, Unit, Message>(
     Person(), personValidator, Unit, Job(), id = Person.id
 ) {
     val save = handle { person ->
-        if (validate(person, Unit).valid) {
+        if (validation(person, Unit).valid) {
             PersonListStore.add(person)
             cleanUpValMessages()
             Person()
