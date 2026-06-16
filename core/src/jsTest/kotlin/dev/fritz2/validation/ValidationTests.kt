@@ -5,10 +5,12 @@ import dev.fritz2.core.lensOf
 import dev.fritz2.core.render
 import dev.fritz2.core.storeOf
 import dev.fritz2.runTest
+import dev.fritz2.validation.FactoryFunctionTests.Person
 import dev.fritz2.validation.test.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
@@ -33,14 +35,7 @@ class FactoryFunctionTests {
     @Test
     fun testWithJobStoreOfWithFlowMetadataAndDataChangeFirst() = runTest {
         val storedMeta = storeOf(0)
-        // Just as a PoC: We can achieve the "old" behavior quite easily
-        val sut = ValidatingStore(
-            initialData = Person("Chris"),
-            validation = Person.validate,
-            metadata = storedMeta.data,
-            modifier = { it.drop(1) }, // restore old behavior
-            job = job
-        )
+        val sut = storeOf(initialData = Person("Chris"), validation = Person.validate, metadata = storedMeta.data)
 
         val id = Id.next()
         render {
@@ -233,6 +228,51 @@ class FactoryFunctionTests {
             delay(100.milliseconds)
             assertEquals("Data: Fritz II", divData.textContent)
         }
+    }
+}
+
+class ModifierTests {
+
+    private data class Person(val name: String) {
+        companion object {
+            val validate: Validation<Person, Int, Message> = validation { inspector, meta ->
+                add(Message("", "Data: ${inspector.data.name}; Meta: $meta"))
+            }
+        }
+    }
+
+    @Test
+    fun testModifierEnablesStopValidatingInitialState() = runTest {
+        val storedMeta = storeOf(0)
+        // Just as a PoC: We can achieve the "old" behavior quite easily
+        val sut = object : ValidatingStore<Person, Int, Message>(
+            initialData = Person("Chris"),
+            validation = Person.validate,
+            metadata = storedMeta.data,
+            job = job
+        ) {
+            override val modifier: (Flow<Int>) -> Flow<Int> = { it }
+        }
+
+        val id = Id.next()
+        render {
+            div(id = id) {
+                sut.messages.map { messages -> messages.joinToString { it.text } }.renderText(into = this)
+            }
+        }
+
+        delay(100.milliseconds)
+        val divData = document.getElementById(id) as HTMLDivElement
+
+        assertEquals("", divData.textContent)
+
+        sut.update(Person("Fritz II"))
+        delay(100.milliseconds)
+        assertEquals("Data: Fritz II; Meta: 0", divData.textContent)
+
+        storedMeta.update(42)
+        delay(100.milliseconds)
+        assertEquals("Data: Fritz II; Meta: 42", divData.textContent)
     }
 }
 
