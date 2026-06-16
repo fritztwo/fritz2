@@ -21,11 +21,11 @@ parameters:
 - a type for metadata you want to forward from Handlers to the validation (Unit by default)
 - a type describing the validation results (e.g., a message), which must implement the `ValidationMessage` interface
 
-fritz2 simplifies data validation within your application by providing a combination of conventions, data types, and 
+fritz2 simplifies data validation within your application by providing a combination of conventions, data types, and
 factory functions.
 
 :::info
-By utilizing [headless components](/headless/), validation messages are automatically associated with their 
+By utilizing [headless components](/headless/), validation messages are automatically associated with their
 respective components, requiring no additional effort.
 :::
 
@@ -96,52 +96,52 @@ Person.validate(invalidPerson)
 
 ### Inspectors on the Surface
 
-You might have wondered what exactly the `Inspector` is and why it is used for data access and processing instead of 
+You might have wondered what exactly the `Inspector` is and why it is used for data access and processing instead of
 working directly with an object's fields.
 
-Think of an `Inspector` as a read-only `Store`. In essence, it is the counterpart to the mutable stores in the UI that 
+Think of an `Inspector` as a read-only `Store`. In essence, it is the counterpart to the mutable stores in the UI that
 hold the application's state.
 
 When performing validation, you are generally working with the same types that are managed in stores within the UI.
 
-By wrapping these objects in an `Inspector` and consistently using the **same** `Lense`s as with the stores, 
-messages are generated that refer to exactly the same part of the model (usually a specific property). 
+By wrapping these objects in an `Inspector` and consistently using the **same** `Lense`s as with the stores,
+messages are generated that refer to exactly the same part of the model (usually a specific property).
 This relationship allows the UI to later display messages precisely at the fields they were intended for.
 
 This property is reflected in the `Inspector.path` field.
 
-For a high-level overview, it is sufficient to accept this and know that you access the data via `Inspector.data`. 
-By using various mapping functions, you can decompose the model down to its leaf nodes, passing the corresponding 
+For a high-level overview, it is sufficient to accept this and know that you access the data via `Inspector.data`.
+By using various mapping functions, you can decompose the model down to its leaf nodes, passing the corresponding
 lenses as parameters.
 
-If you follow these conventions, [Headless UI components](/headless), for example, will automatically provide all 
+If you follow these conventions, [Headless UI components](/headless), for example, will automatically provide all
 validation messages associated with a mapped store in a `value` field without any additional effort.
 
-More in-depth information can be found in the section 
+More in-depth information can be found in the section
 [Of Inspectors and Paths](#of-inspectors-and-paths).
 
 ## Essentials
 
 ### Integrate validation into stores
 
-Since fritz2 stores are the central entities for managing state, it is only natural to combine the update and 
-validation processes. This is achieved using the specialized `ValidatingStore`, which is a subtype of the standard 
-fritz2 `Store`.
+Since fritz2 stores are the central entities for managing state, it is only natural to combine the update and
+validation processes. This is achieved using the specialized `ValidatingStore` interface, which is a subtype 
+of the standard fritz2 `Store`.
 
-By default, a `ValidatingStore` automatically validates its data after changes and updates the message list.
-You can access these validation messages via `store.messages`: a `Flow<List<M>>` where `M` is your `ValidationMessage`
-type. Handle this `Flow` like any other `Flow` of a `List` — for example, render it to HTML:
+By default, the `ValidatingStore` implementation automatically validates its data after changes and emits a message list.
+You can access these validation messages via the `store.validate` `EmittingHandler`, which emits a `List<M>` where `M`
+is your `ValidationMessage` type. Handle this `Flow` like any other `Flow` of a `List` — for example, render it to HTML:
 
 ```kotlin
 // create a `ValidatingStore` by using an overloaded factory located in `dev.fritz2.validation`-package
-val store = storeOf(Person("Chris", 48), Person::validate)
+val store = storeOf(Person("Chris", 48), Person.validate)
 
 // create some messages with shady data
 store.update(Person("", 101))
 
 render {
     ul {
-        store.messages.renderEach {
+        store.validate.renderEach {
             li(baseClass = it.severity.name.toLowerCase()) {
                 +it.text
             }
@@ -154,27 +154,23 @@ If you want to start the validation process in a specific handler you can do so 
 by yourself:
 
 ```kotlin
-object PersonStore : ValidatingStore<Person, Unit, Message>(Person("", 0), Person.validation, job = Job()) {
+object PersonStore : ValidatingStore<Person, Unit, Message> by ValidatingStore.of(
+    Person("", 0), Job(), id = Person.id, personValidator, { data -> data.map { } }
+) {
     val save = handle {
-        if (validate(it).valid) {
+        if (personValidator(person, Unit).valid) {
             // send request to server...
             Person("", 0)
         } else it
     }
-    val reset = handle {
-        resetMessages() // empties the list of messages
-        Person("", 0)
-    }
 }
 ```
-
-Call `resetMessages()` to manually clear the list of messages when needed.
 
 Have a look at a more complete example [here](/examples/validation).
 
 ### Validating Object Hierarchies
 
-Real-world applications often deal with complex object hierarchies. You can apply the same validation mechanisms to 
+Real-world applications often deal with complex object hierarchies. You can apply the same validation mechanisms to
 these structures without any extra effort.
 
 We’ll start by extending our `Person` example with a new `Address` field, defined as follows:
@@ -199,14 +195,14 @@ data class Address(
 }
 ```
 
-As you can see, the `Address` type offers nothing special or new: validation is implemented within its 
+As you can see, the `Address` type offers nothing special or new: validation is implemented within its
 `companion object`, as recommended.
 
-We can now call the `Address` validator from within the `Person` validator. In doing so, the appropriate `Inspector` 
-must be passed—in this case, an `Inspector<Address>`. This approach should also be familiar, as it is implemented 
+We can now call the `Address` validator from within the `Person` validator. In doing so, the appropriate `Inspector`
+must be passed—in this case, an `Inspector<Address>`. This approach should also be familiar, as it is implemented
 using the typical mapping operations.
 
-Since every validator call always returns a list of messages, remember to add the results from the called validator 
+Since every validator call always returns a list of messages, remember to add the results from the called validator
 to the calling validator's list:
 
 ```kotlin
@@ -232,7 +228,7 @@ data class Person(
 }
 ```
 
-We can now continue to call the `Person` validator and pass an invalid `Address`. As a result, we will receive 
+We can now continue to call the `Person` validator and pass an invalid `Address`. As a result, we will receive
 a message generated by the `Address` validator:
 
 ```kotlin
@@ -243,10 +239,10 @@ Person.validate(invalidPerson)
 
 ### Validating Collections
 
-Another typical manifestation of complex object hierarchies are collections, such as lists or maps, that appear as 
+Another typical manifestation of complex object hierarchies are collections, such as lists or maps, that appear as
 field types within objects.
 
-We can extend our previous example and imagine that a `Person` can have multiple addresses. 
+We can extend our previous example and imagine that a `Person` can have multiple addresses.
 Thus, the field is updated to: `val addresses: List<Address>`.
 
 ```kotlin
@@ -270,7 +266,7 @@ data class Person(
 ```
 
 For collections, the `Inspector` provides mapping functions analogous to those for `Store`s, as described in the
-[Store Mapping](/docs/storemapping/#summary-of-store-mapping-factories) chapter. 
+[Store Mapping](/docs/storemapping/#summary-of-store-mapping-factories) chapter.
 In this case, we use a convenience function `inspectEach` on a `List`, which internally uses the index as identifier
 for each entry, which is the canonical choice for a field of type `List<T>`.
 
@@ -297,7 +293,7 @@ Person.validate(invalidPerson)
 // ]
 ```
 
-The messages are easy to distinguish because their paths include the index. Based on the zero-based index, 
+The messages are easy to distinguish because their paths include the index. Based on the zero-based index,
 the addresses at positions `0` and `2` are therefore invalid.
 
 ### Using Metadata
@@ -306,18 +302,18 @@ Up to this point, we have only looked at validations in isolation.
 
 In reality, however, validations often require additional information, which we will henceforth refer to as *metadata*.
 
-Examples of such data include the progress within a complex multi-step form, where data for a global model is 
-entered incrementally. By keeping track of the user's current step, you can limit validation to the specific 
+Examples of such data include the progress within a complex multi-step form, where data for a global model is
+entered incrementally. By keeping track of the user's current step, you can limit validation to the specific
 part of the model that should actually be present at that stage.
 
-Furthermore, submodels often require information from other parts of the global model for their own validation. 
-Metadata can be used here as well to keep the component being validated as independent from the overall model 
+Furthermore, submodels often require information from other parts of the global model for their own validation.
+Metadata can be used here as well to keep the component being validated as independent from the overall model
 as possible.
 
-Another common example is the current date or time. This information should not be determined inside the validation 
+Another common example is the current date or time. This information should not be determined inside the validation
 logic itself; instead, it should be passed in to simplify — or in some cases, even enable — testability.
 
-To address these requirements, the `validation` factory API provides a second parameter for arbitrary metadata 
+To address these requirements, the `validation` factory API provides a second parameter for arbitrary metadata
 of type `T`:
 
 ```kotlin
@@ -327,8 +323,8 @@ fun <D, T, M> validation(validate: MutableList<M>.(Inspector<D>, T) -> Unit): Va
 //                                                            in order to pass the actual metadata
 ```
 
-Let's revisit our familiar `Person` example. Imagine a UI where you first enter only the person's basic details, 
-followed by their addresses in a second step. To control which parts of the validation should be executed, 
+Let's revisit our familiar `Person` example. Imagine a UI where you first enter only the person's basic details,
+followed by their addresses in a second step. To control which parts of the validation should be executed,
 you need to know the current progress within the UI. For this purpose, we will introduce a dedicated `Enum` type:
 
 ```kotlin
@@ -337,7 +333,7 @@ enum class Progress {
 }
 ```
 
-We can now use this `Progress` state within our validation code to ensure that specific data is only validated when 
+We can now use this `Progress` state within our validation code to ensure that specific data is only validated when
 required by the UI logic:
 
 ```kotlin
@@ -391,24 +387,28 @@ Person.validate(invalidPerson, Progress.Address)
 :::info
 Metadata types can, of course, be as complex as needed!
 
-If you require more than just a simple `Enum`, you should create a **dedicated** `data class` that encapsulates 
+If you require more than just a simple `Enum`, you should create a **dedicated** `data class` that encapsulates
 all the necessary data.
 :::
 
-### Dealing with reactive Metadata and ValidatingStore
+### Dealing with Metadata and ValidatingStore
 
 Now that you are familiar with [integrating validation](#integrate-validation-into-stores) into a `Store` using
-the specialized `ValidatingStore` and understand the motivation [behind metadata](#using-metadata) in validation, 
+the specialized `ValidatingStore` and understand the motivation [behind metadata](#using-metadata) in validation,
 it is time to discuss how to use both together.
 
-There is a significant difference between static metadata — those that do not change during the course of an 
-application's use — and those that actually change analogously to the state of an application and are therefore
-potentially different with each validation run.
+fritz2 offers support for both static and reactive metadata. In practice, the latter often play a crucial role,
+as applications frequently build up their data model over a series of steps,
+resulting in parts that cannot be valid yet. Typically, you do not want to display messages for these sections yet.
+In this regard, the so-called UI state often plays an important role in validation; consequently,
+it exists as part of the overall data model within a store and must be handled reactively.
 
-Let's first look at the simpler case where the metadata is static and possibly only depends on the configuration
-of the application instance.
+But sometimes metadata actually only exists as static data; in web applications, this might be data that is guaranteed
+to remain constant throughout the duration of a session.
 
-We will continue using the example from the previous section.
+We will first consider the static case.
+
+We will simply continue using the example from the previous sections.
 
 We first create two data sets:
 - a valid person
@@ -441,19 +441,22 @@ val invalidChris = chris.copy(
 
 With this, we can create a store:
 ```kotlin
-val storedPerson = ValidatingStore(chris, Person.validate, Progress.Address, Job())
-//                                                         ^^^^^^^^^^^^^^^^
-//                                                         We must pass initial metadata
-//                                                         We chose the maximum progress to see all messages
+// we import the new factory from the `validation`-package!
+import dev.fritz2.validation.storeOf
+
+val storedPerson = storeOf(chris, Person.validate, Progress.Address, Job())
+//                                                 ^^^^^^^^^^^^^^^^
+//                                                 We must pass initial metadata
+//                                                 We chose the maximum progress to see all messages
 ```
 
-Note that the metadata we pass in the constructor is used for all validations. They are therefore static over the 
+Note that the metadata we pass in the factory is used for all validations. They are therefore static over the
 entire lifetime of the store.
 
 We can demonstrate the validation with the following minimal UI:
 ```kotlin
 render {
-    val storedPerson = ValidatingStore(chris, Person.validate, Progress.Address, job)
+    val storedPerson = storeOf(chris, Person.validate, Progress.Address)
 
     button {
         +"Set invalid Data"
@@ -462,7 +465,7 @@ render {
     p {
         +"Messages: "
         ul {
-            storedPerson.messages.renderEach { message ->
+            storedPerson.validate.renderEach { message ->
                 li { +message.toString() }
             }
         }
@@ -477,42 +480,24 @@ Message(path=.age, severity=Warning, text=Is the person really older than 100 ye
 Message(path=.addresses.0.street, severity=Error, text=Please provide a street)
 ```
 
-As a rule, however, metadata will not be static, but — just like the functional data — will be dynamically dependent 
+As a rule, however, metadata will not be static, but — just like the functional data — will be dynamically dependent
 on the user's actions. So how can we use such dynamic metadata for validations?
 
-We must derive our own type from `ValidatingStore` and implement handlers within it that call the following function:
+There also is a *factory* for this case - in fact the internal implementation of the `ValidatingStore`deals with 
+a `Flow<T>` for triggering the `validate` handler.
+
+Now we still need a store for the UI state — in our example, the `Progress` — and we must pass its `data`-flow to the
+validating store factory:
 ```kotlin
-protected fun validate(data: D, metadata: T = metadataDefault): List<M>
+val storedProgress = storeOf(Progress.Core)
+val storedPerson = storeOf(invalidChris, Person2.validate, storedProgress.data)
+//                                                         ^^^^^^^^^^^^^^^^^^^
+//                                                         we pass a `Flow` of `Progress`, so each new value
+//                                                         on the flow will retrigger the `validate` handler
 ```
 
-The following implementation allows injecting a `Progress` value to call the validation with this metadata set:
-```kotlin
-val storedPerson = object : ValidatingStore<Person, Progress, Message>(
-    invalidChris, Person.validate, Progress.Core, job
-) {
-    val validate = handle<Progress> { state, progress ->
-    //                    ^^^^^^^^           ^^^^^^^^
-    //                    Enable to pass a `Progress`-object
-        
-        validate(state, progress)
-        //              ^^^^^^^^
-        //              pass the Progress-object into the actual validation
-        state
-    }
-}
-```
-
-Now we still need a store for the UI state — in our example, the `Progress` — and we must connect its reactive 
-state with the handler created above:
-```kotlin
-val storedProgress = storeOf(Progress.Core, job)
-
-// here the "magic" happens: the changed Progress will trigger a new validation
-storedProgress.data handledBy storedPerson.validate
-```
-
-Now we can slightly adjust the example: We change the button so that it toggles the current progress back and forth 
-between the `Progress.Core` and the `Progress.Address` value. We remember that the address validation only takes 
+Now we can slightly adjust the example: We change the button so that it toggles the current progress back and forth
+between the `Progress.Core` and the `Progress.Address` value. We remember that the address validation only takes
 effect at the `Progress.Address` value. Only then will the message regarding the invalid street appear.
 ```kotlin
 button {
@@ -549,8 +534,8 @@ Message(path=.addresses.0.street, severity=Error, text=Please provide a street)
 ```
 
 :::info
-Of course, you can pass the metadata into the `Handler` in any way intended by fritz2, e.g., through an event
-triggered by the user, such as clicking a "Next" button or similar.
+Of course, you can can call the `public validate` handler manually and pass the metadata into the `Handler` in any way
+intended by fritz2, e.g., through an event triggered by the user, such as clicking a "Next" button or similar.
 :::
 
 ### Summary of Inspector-Mappings
@@ -576,10 +561,10 @@ There are also those convenience functions, that reduce the boilerplate of valid
 
 ### Of Inspectors and Paths
 
-As described at the beginning, the primary purpose of inspectors within validation is to encapsulate data access in 
+As described at the beginning, the primary purpose of inspectors within validation is to encapsulate data access in
 such a way that it produces the same *mapped* path as the one generated when mapping the main store down to a leaf node.
 
-By convention, every mapping call takes the ID of a `Lens` and appends it to the existing path using a dot (`.`). 
+By convention, every mapping call takes the ID of a `Lens` and appends it to the existing path using a dot (`.`).
 This process occurs during the mapping of both stores and inspectors:
 
 ```kotlin
@@ -630,34 +615,34 @@ storedAddress.path
 // .addresses.0
 ```
 
-You can clearly see the dot notation of the path, which — similar to [XPATH](https://en.wikipedia.org/wiki/XPath) 
-or [JSON-Path](https://en.wikipedia.org/wiki/JSONPath) in their simplest forms — describes the position of an object 
+You can clearly see the dot notation of the path, which — similar to [XPATH](https://en.wikipedia.org/wiki/XPath)
+or [JSON-Path](https://en.wikipedia.org/wiki/JSONPath) in their simplest forms — describes the position of an object
 within the overall model, starting from the root.
 
 When using lenses generated by fritz2, the property name is consistently used for this purpose.
 
 :::info
-If you write your own lenses, you should also follow the convention of always using the actual property name as 
+If you write your own lenses, you should also follow the convention of always using the actual property name as
 the `Lens.id`.
 :::
 
-On the UI side, mapping is used to create small, dedicated stores for an input field. On the validation side, 
+On the UI side, mapping is used to create small, dedicated stores for an input field. On the validation side,
 mapping is used to create dedicated inspectors that contain the same path to a data field.
 
-Using this path, you can generate validation messages that can then be uniquely assigned to a data field in the UI, 
+Using this path, you can generate validation messages that can then be uniquely assigned to a data field in the UI,
 based on the path of the mapped store.
 
-The Headless components leverage this exact mechanism, providing an automatic assignment of validation messages to 
+The Headless components leverage this exact mechanism, providing an automatic assignment of validation messages to
 a component and its store path, which is set in their `value` property.
 
 An example of this can be seen in the API of a [CheckboxGroup](/headless/checkboxgroup/#checkboxgroupvalidationmessages).
 
 ### Delegating Validation in Sealed Hierarchies
 
-Since sub-`Inspector`s are created using their `map` function and a `Lens`, lenses generated for sealed class 
+Since sub-`Inspector`s are created using their `map` function and a `Lens`, lenses generated for sealed class
 hierarchies can be utilized during validation just like with a `Store`.
 
-Let's modify the wish list example from the 
+Let's modify the wish list example from the
 [store mapping chapter](/docs/storemapping/#dealing-with-sealed-type-hierarchies) by adding some validation logic:
 
 ```kotlin

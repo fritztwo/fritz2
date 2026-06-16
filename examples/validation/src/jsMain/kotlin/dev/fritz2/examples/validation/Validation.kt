@@ -2,8 +2,10 @@ package dev.fritz2.examples.validation
 
 import dev.fritz2.core.*
 import dev.fritz2.validation.ValidatingStore
+import dev.fritz2.validation.ValidatingStore.Companion.triggerImmediately
 import dev.fritz2.validation.valid
 import kotlinx.browser.document
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -19,12 +21,12 @@ object PersonListStore : RootStore<List<Person>>(emptyList(), job = Job()) {
     }
 }
 
-@OptIn(ExperimentalTime::class)
-object PersonStore : ValidatingStore<Person, Unit, Message>(
-    Person(), personValidator, Unit, Job(), id = Person.id
+@OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
+object PersonStore : ValidatingStore<Person, Unit, Message> by ValidatingStore.of(
+    Person(), Job(), id = Person.id, personValidator, triggerImmediately()
 ) {
     val save = handle { person ->
-        if (validate(person, Unit).valid) {
+        if (personValidator(person, Unit).valid) {
             PersonListStore.add(person)
             cleanUpValMessages()
             Person()
@@ -182,7 +184,8 @@ fun cleanUpValMessages() {
         message?.textContent = ""
     }
     // activities
-    document.getElementById("${PersonStore.id}.activities")?.removeClass(Status.Invalid.inputClass, Status.Valid.inputClass)
+    document.getElementById("${PersonStore.id}.activities")
+        ?.removeClass(Status.Invalid.inputClass, Status.Valid.inputClass)
 }
 
 // helper method for creating form-groups for text input
@@ -240,7 +243,7 @@ fun main() {
         }
 
         // adding bootstrap css classes to the validated elements
-        PersonStore.messages.valid.combine(PersonStore.messages) { isValid, msgs ->
+        PersonStore.validate.valid.combine(PersonStore.validate) { isValid, msgs ->
             // cleanup validation
             cleanUpValMessages()
 
