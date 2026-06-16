@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@source "../../../build/js/packages/fritz2-snippets/kotlin/*.js";
+
+@theme {
+    /* Schriften */
+    --font-sans: "Inter var", ui-sans-serif, system-ui, sans-serif;
+
+    /* Primary Palette */
+    --color-primary-50: #FBFDFD;
+    --color-primary-100: #EEF6F5;
+    --color-primary-200: #D5E7E6;
+    --color-primary-300: #BBD6D8;
+    --color-primary-400: #A1C3C9;
+    --color-primary-500: #87AEBA;
+    --color-primary-600: #6D97AB;
+    --color-primary-700: #50738B;
+    --color-primary-800: #3A4F64;
+    --color-primary-900: #232E3D;
+    --color-primary: var(--color-primary-600);
+
+    /* Success Palette */
+    --color-success-50: #DFF7D3;
+    --color-success-100: #D0F4BD;
+    --color-success-200: #B0EC92;
+    --color-success-300: #91E467;
+    --color-success-400: #71DD3B;
+    --color-success-500: #58C322;
+    --color-success-600: #44981A;
+    --color-success-700: #316C13;
+    --color-success-800: #1D410B;
+    --color-success-900: #0A1504;
+    --color-success: var(--color-success-500);
+
+    /* Warning Palette */
+    --color-warning-50: #FFFFFF;
+    --color-warning-100: #FFF6E6;
+    --color-warning-200: #FFE3B3;
+    --color-warning-300: #FFD080;
+    --color-warning-400: #FFBE4D;
+    --color-warning-500: #FFAB1A;
+    --color-warning-600: #E69200;
+    --color-warning-700: #B37100;
+    --color-warning-800: #805100;
+    --color-warning-900: #4D3100;
+    --color-warning: var(--color-warning-500);
+
+    /* Error Palette */
+    --color-error-50: #FBCFCF;
+    --color-error-100: #F9B8B8;
+    --color-error-200: #F58989;
+    --color-error-300: #F25959;
+    --color-error-400: #EE2A2A;
+    --color-error-500: #D41111;
+    --color-error-600: #A50D0D;
+    --color-error-700: #760909;
+    --color-error-800: #460606;
+    --color-error-900: #170202;
+    --color-error: var(--color-error-500);
+}
