@@ -116,6 +116,38 @@ interface Store<D> {
         })
 
     /**
+     * factory method to create an [EmittingHandler] taking an action-value and the current store value but does
+     * not derive a new value from both. The actual value is just passed through, so it is all about dealing
+     * with some *side effect* by calling the [FlowCollector.emit] function from within the [execute] parameter.
+     *
+     * @see handleAndEmit
+     *
+     * @param execute lambda that is executed for each action-value on the connected [Flow]. You should emit values
+     * from this lambda.
+     */
+    fun <A, E> handleOnlyEmit(execute: suspend FlowCollector<E>.(D, A) -> Unit): EmittingHandler<A, E> =
+        handleAndEmit { state, payload ->
+            execute(state, payload)
+            state
+        }
+
+    /**
+     * factory method to create an [EmittingHandler] taking the current store value but does not derive a new value
+     * from it. The actual value is just passed through, so it is all about dealing with some *side effect*
+     * by calling the [FlowCollector.emit] function from within the [execute] parameter.
+     *
+     * @see handleAndEmit
+     *
+     * @param execute lambda that is executed for each action-value on the connected [Flow]. You should emit values
+     * from this lambda.
+     */
+    fun <E> handleOnlyEmit(execute: suspend FlowCollector<E>.(D) -> Unit): EmittingHandler<Unit, E> =
+        handleAndEmit { state, payload ->
+            execute(state)
+            state
+        }
+
+    /**
      * Default error handler printing the error to console.
      *
      * @param cause Throwable to handle

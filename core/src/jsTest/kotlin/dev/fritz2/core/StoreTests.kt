@@ -252,4 +252,112 @@ class StoreTests {
         assertEquals("", withoutIdStore.path)
         assertEquals(".one.two", withInitialPathIdStore.path)
     }
+
+    @Test
+    fun handleOnlyEmit_DoesNotChangeTheStateAndEmitsValues() = runTest {
+        val idData = Id.next()
+        val idResult = Id.next()
+        val buttonUpdateId = Id.next()
+        val buttonTriggerId = Id.next()
+        val buttonTriggerUnitId = Id.next()
+
+        val storedResult = storeOf("")
+
+        val storedData = object : RootStore<String>("initial", job = Job()) {
+            val trigger = handleOnlyEmit<String, String> { state, action ->
+                // only forwards the action; no update of the state!
+                emit("$state -> $action")
+            }
+
+            val triggerUnit = handleOnlyEmit<String> { state ->
+                // only forwards the action; no update of the state!
+                emit("$state -> Unit")
+            }
+
+            init {
+                trigger handledBy storedResult.update
+                triggerUnit handledBy storedResult.update
+            }
+        }
+
+        render {
+            section {
+                div(id = idData) {
+                    // should only change after update but NOT after triggering!
+                    storedData.data.renderText()
+                }
+                div(id = idResult) {
+                    // must change after triggering
+                    storedResult.data.renderText()
+                }
+                button(id = buttonTriggerId) {
+                    clicks.map { "clicked" } handledBy storedData.trigger
+                }
+                button(id = buttonUpdateId) {
+                    clicks.map { "updated" } handledBy storedData.update
+                }
+                button(id = buttonTriggerUnitId) {
+                    clicks handledBy storedData.triggerUnit
+                }
+            }
+        }
+
+        delay(100)
+
+        val buttonTrigger = document.getElementById(buttonTriggerId) as HTMLButtonElement
+        val buttonTriggerUnit = document.getElementById(buttonTriggerUnitId) as HTMLButtonElement
+        val buttonUpdate = document.getElementById(buttonUpdateId) as HTMLButtonElement
+        val divData = document.getElementById(idData) as HTMLDivElement
+        val divResult = document.getElementById(idResult) as HTMLDivElement
+
+        assertEquals(
+            "initial", divData.textContent,
+            "textContent of divData is not same like 'initial'"
+        )
+        assertEquals(
+            "", divResult.textContent,
+            "textContent of divResult is not empty"
+        )
+
+        buttonTrigger.click()
+        delay(100)
+
+        assertEquals(
+            "initial", divData.textContent,
+            "textContent of divData is not same like 'initial'"
+        )
+        assertEquals(
+            "initial -> clicked",
+            divResult.textContent,
+            "textContent of divResult is not 'initial -> clicked'"
+        )
+
+        buttonUpdate.click()
+        delay(100)
+        buttonTrigger.click()
+        delay(100)
+
+        assertEquals(
+            "updated", divData.textContent,
+            "textContent of divData is not same like 'updated'"
+        )
+        assertEquals(
+            "updated -> clicked",
+            divResult.textContent,
+            "textContent of divResult is not 'updated -> clicked'"
+        )
+
+        buttonTriggerUnit.click()
+        delay(100)
+
+        assertEquals(
+            "updated", divData.textContent,
+            "textContent of divData is not same like 'updated'"
+        )
+        assertEquals(
+            "updated -> Unit",
+            divResult.textContent,
+            "textContent of divResult is not 'updated -> Unit'"
+        )
+    }
 }
