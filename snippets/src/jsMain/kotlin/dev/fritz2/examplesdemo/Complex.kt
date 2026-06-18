@@ -26,7 +26,7 @@ fun RenderContext.complex() {
             value(store.data)
             changes.values() handledBy store.update
         }
-        store.messages.renderEach {
+        store.validate.renderEach {
             p("mt-2 text-red-500") {
                 +it.text
             }
